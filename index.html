@@ -515,35 +515,46 @@ function extractTime(ts){
 // ── NORMALISE DAERAH for matching (uppercase, trim, remove extra spaces)
 function normDaerah(s){ return String(s||'').toUpperCase().replace(/\s+/g,' ').trim(); }
 
-// ── COLUMN MAP PER DAERAH
-const DAERAH_COLS = {
-  'ALOR GAJAH':   { balai: 2, nama: 3 },
-  'JASIN':        { balai: 4, nama: 5 },
-  'IPK SSPDRM':   { balai: 6, nama: 7 },
-  'MELAKA TENGAH':{ balai: 8, nama: 9 },
-};
+// ── COLUMN MAP - ALL 4 DAERAH PAIRS IN EVERY ROW
+// Col 2,3 = Alor Gajah (balai, nama)
+// Col 4,5 = Jasin (balai, nama)
+// Col 6,7 = IPK SSPDRM (balai, nama)
+// Col 8,9 = Melaka Tengah (balai, nama)
+const ALL_PAIRS = [
+  { daerah: 'ALOR GAJAH',    balai: 2, nama: 3 },
+  { daerah: 'JASIN',         balai: 4, nama: 5 },
+  { daerah: 'IPK SSPDRM',    balai: 6, nama: 7 },
+  { daerah: 'MELAKA TENGAH', balai: 8, nama: 9 },
+];
 
-// ── EXPAND ROWS - one record per row using daerah-specific columns
+// ── EXPAND ROWS - check ALL 4 daerah column pairs per row
 function expandRows(rows){
   const out=[];
   rows.forEach(row=>{
-    const timestamp=String(row[0]||'');
-    const daerah=normDaerah(row[1]);
-    const bertugas = String(row[10]||'').trim();  // BALAI POLIS YANG BERTUGAS HARI INI
-    const pejawatan= String(row[12]||'').trim();  // PERJAWATAN
-    const jantina  = String(row[13]||'').trim();  // JANTINA
-    const pangkat  = String(row[14]||'').trim();  // PANGKAT ANGGOTA
-    const tarikh   = String(row[15]||'').trim();  // TARIKH PENUGASAN ANGGOTA
-    const jenis    = String(row[16]||'').trim();  // JENIS TUGASAN
-    const masa     = String(row[17]||'').trim();  // MASA BERMULA TUGAS
-    const jam      = parseFloat(row[18])||0;      // JUMLAH JAM PENUGASAN
-    const lain     = String(row[19]||'').trim();  // LAIN-LAIN TUGAS
-    const cols=DAERAH_COLS[daerah];
-    if(!cols)return;
-    const balai=String(row[cols.balai]||'').trim();
-    const nama=String(row[cols.nama]||'').trim();
-    if(!nama)return;
-    out.push({timestamp,daerah,balai:balai||bertugas,nama,bertugas,pejawatan,jantina,pangkat,jenis,jam,masa,tarikh,lain});
+    const timestamp = String(row[0]||'');
+    const rowDaerah = normDaerah(row[1]); // which daerah submitted
+    const bertugas  = String(row[10]||'').trim();
+    const pejawatan = String(row[12]||'').trim();
+    const jantina   = String(row[13]||'').trim();
+    const pangkat   = String(row[14]||'').trim();
+    const tarikh    = String(row[15]||'').trim();
+    const jenis     = String(row[16]||'').trim();
+    const masa      = String(row[17]||'').trim();
+    const jam       = parseFloat(row[18])||0;
+    const lain      = String(row[19]||'').trim();
+
+    // Check every daerah pair — include if nama OR balai has data
+    ALL_PAIRS.forEach(pair=>{
+      const balai = String(row[pair.balai]||'').trim();
+      const nama  = String(row[pair.nama] ||'').trim();
+      if(!nama && !balai) return; // skip empty pairs
+      out.push({
+        timestamp, daerah: pair.daerah,
+        balai: balai||'—', nama: nama||balai,
+        bertugas, pejawatan, jantina, pangkat,
+        jenis, jam, masa, tarikh, lain
+      });
+    });
   });
   return out;
 }
@@ -610,11 +621,12 @@ function renderAll(){
   const todayFull=getTodayFull();
   const todayData=allData.filter(r=>normaliseDate(r.tarikh)===today);
 
-  // DEBUG: show all unique raw daerah values + tarikh values in blue bar
+  // DEBUG: show per-daerah counts and tarikh info
   if(currentUser&&currentUser.role==='admin'){
-    const uniqueDaerah=[...new Set(allData.map(d=>'['+d.daerah+']'))].join(' ');
-    const uniqueTarikh=[...new Set(allData.map(d=>d.tarikh))].slice(0,5).join(' | ');
-    showAlert('info','Daerah: '+uniqueDaerah+' || Tarikh sample: '+uniqueTarikh+' || Today: '+today+' || Today records: '+todayData.length);
+    const counts = ['MELAKA TENGAH','JASIN','ALOR GAJAH','IPK SSPDRM']
+      .map(d=>d+': '+allData.filter(r=>r.daerah===d).length).join(' | ');
+    const uniqueTarikh=[...new Set(allData.map(d=>d.tarikh))].slice(0,3).join(', ');
+    showAlert('info','Total: '+allData.length+' | '+counts+' | Tarikh sample: '+uniqueTarikh+' | Today: '+today+' | Today total: '+todayData.length);
   }
 
   // Only render tabs the user has access to
