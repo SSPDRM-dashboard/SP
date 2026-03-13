@@ -409,7 +409,7 @@ const DAERAH_MAP = {
 };
 const COLORS = ['#003087','#0a3fa8','#1d4ed8','#2563eb','#3b82f6','#60a5fa','#dc2626','#16a34a','#d97706','#7c3aed'];
 
-let allData=[], charts={}, countdownSec=3600, countdownTimer;
+let allData=[], charts={}, countdownSec=1800, countdownTimer;
 let currentUser=null;
 
 // ── LOGIN
@@ -476,7 +476,7 @@ setInterval(updateClock,1000); updateClock();
 
 // ── COUNTDOWN
 function startCountdown(){
-  clearInterval(countdownTimer); countdownSec=3600;
+  clearInterval(countdownTimer); countdownSec=1800;
   countdownTimer=setInterval(()=>{
     countdownSec--;
     if(countdownSec<=0){loadData();return;}
@@ -495,9 +495,23 @@ function getTodayFull(){
   return days[n.getDay()]+', '+n.getDate()+' '+months[n.getMonth()]+' '+n.getFullYear();
 }
 function normaliseDate(str){
-  if(!str)return'';str=str.trim();
-  if(str.includes('-')){const p=str.split('-');if(p.length===3)return parseInt(p[2])+'/'+parseInt(p[1])+'/'+p[0];}
-  const p=str.split('/');if(p.length===3)return parseInt(p[0])+'/'+parseInt(p[1])+'/'+p[2];
+  if(!str) return '';
+  str = str.trim();
+  // Handle ISO format: 2026-03-13T16:00:00.000Z → use UTC+8 (Malaysia)
+  if(str.includes('T')){
+    const d = new Date(str);
+    // Adjust to Malaysia time (UTC+8)
+    const myt = new Date(d.getTime() + 8*60*60*1000);
+    return myt.getUTCDate()+'/'+(myt.getUTCMonth()+1)+'/'+myt.getUTCFullYear();
+  }
+  // Handle YYYY-MM-DD
+  if(str.includes('-')){
+    const p=str.split('-');
+    if(p.length===3) return parseInt(p[2])+'/'+parseInt(p[1])+'/'+p[0];
+  }
+  // Handle D/M/YYYY or DD/MM/YYYY
+  const p=str.split('/');
+  if(p.length===3) return parseInt(p[0])+'/'+parseInt(p[1])+'/'+p[2];
   return str;
 }
 
@@ -527,9 +541,9 @@ function expandRows(rows){
     const pangkat   = String(row[14]||'').trim();
     const tarikh    = String(row[15]||'').trim();
     const jenis     = String(row[16]||'').trim();
-    const masa      = String(row[17]||'').trim();
-    const jam       = parseFloat(row[18])||0;
-    const lain      = String(row[19]||'').trim();
+    const masa = String(row[17]||'').trim(); // HH:MM from Apps Script
+    const jam  = parseFloat(row[18])||0;
+    const lain = String(row[19]||'').trim();
 
     // Combine: take first non-empty value from balai cols C,E,G,I (2,4,6,8)
     const balai = [2,4,6,8].map(i=>String(row[i]||'').trim()).find(v=>v) || '—';
@@ -606,15 +620,7 @@ function renderAll(){
   const todayFull=getTodayFull();
   const todayData=allData.filter(r=>normaliseDate(r.tarikh)===today);
 
-  // DEBUG: show per-daerah counts and tarikh info
-  if(currentUser&&currentUser.role==='admin'){
-    const counts = ['MELAKA TENGAH','JASIN','ALOR GAJAH','IPK SSPDRM']
-      .map(d=>d+': '+allData.filter(r=>r.daerah===d).length).join(' | ');
-    const uniqueTarikh=[...new Set(allData.map(d=>d.tarikh))].slice(0,3).join(', ');
-    // Show first 5 raw rows to debug
-    const rawDebug = allData.slice(0,5).map(r=>'[daerah='+r.daerah+'|balai='+r.balai+'|nama='+r.nama+'|tarikh='+r.tarikh+']').join(' ');
-    showAlert('info','Total: '+allData.length+' | '+counts+' | Today: '+today+' | TodayTotal: '+todayData.length+' | RAW: '+rawDebug);
-  }
+  // (debug removed)
 
   // Only render tabs the user has access to
   const tabsToRender = currentUser.role==='admin'
