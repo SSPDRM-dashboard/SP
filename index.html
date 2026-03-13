@@ -530,7 +530,7 @@ function expandRows(rows){
     BALAI_COLS.forEach((bIdx,i)=>{
       const balai=String(row[bIdx]||'').trim();
       const nama=String(row[NAMA_COLS[i]]||'').trim();
-      if(!nama&&!balai)return;
+      if(!nama) return; // only skip if nama is empty
       out.push({timestamp,daerah,balai:balai||bertugas,nama,bertugas,pejawatan,jenis,jam,masa,tarikh});
     });
   });
@@ -599,6 +599,13 @@ function renderAll(){
   const todayFull=getTodayFull();
   const todayData=allData.filter(r=>normaliseDate(r.tarikh)===today);
 
+  // DEBUG: show all unique raw daerah values + tarikh values in blue bar
+  if(currentUser&&currentUser.role==='admin'){
+    const uniqueDaerah=[...new Set(allData.map(d=>'['+d.daerah+']'))].join(' ');
+    const uniqueTarikh=[...new Set(allData.map(d=>d.tarikh))].slice(0,5).join(' | ');
+    showAlert('info','Daerah: '+uniqueDaerah+' || Tarikh sample: '+uniqueTarikh+' || Today: '+today+' || Today records: '+todayData.length);
+  }
+
   // Only render tabs the user has access to
   const tabsToRender = currentUser.role==='admin'
     ? ['today','d1','d2','d3','d4']
@@ -608,8 +615,7 @@ function renderAll(){
 
   ['d1','d2','d3','d4'].forEach(key=>{
     if(!tabsToRender.includes(key))return;
-    const daerahName=DAERAH_MAP[key]; // e.g. "MELAKA TENGAH"
-    // Match: exact uppercase match (both sides normalised)
+    const daerahName=DAERAH_MAP[key];
     const data=todayData.filter(r=>normDaerah(r.daerah)===daerahName);
     renderTab(key,data,todayFull,false);
   });
