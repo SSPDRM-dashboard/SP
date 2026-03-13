@@ -515,24 +515,12 @@ function extractTime(ts){
 // ── NORMALISE DAERAH for matching (uppercase, trim, remove extra spaces)
 function normDaerah(s){ return String(s||'').toUpperCase().replace(/\s+/g,' ').trim(); }
 
-// ── COLUMN MAP - ALL 4 DAERAH PAIRS IN EVERY ROW
-// Col 2,3 = Alor Gajah (balai, nama)
-// Col 4,5 = Jasin (balai, nama)
-// Col 6,7 = IPK SSPDRM (balai, nama)
-// Col 8,9 = Melaka Tengah (balai, nama)
-const ALL_PAIRS = [
-  { daerah: 'ALOR GAJAH',    balai: 2, nama: 3 },
-  { daerah: 'JASIN',         balai: 4, nama: 5 },
-  { daerah: 'IPK SSPDRM',    balai: 6, nama: 7 },
-  { daerah: 'MELAKA TENGAH', balai: 8, nama: 9 },
-];
-
-// ── EXPAND ROWS - check ALL 4 daerah column pairs per row
+// ── EXPAND ROWS - combine all balai cols (2,4,6,8) and nama cols (3,5,7,9)
 function expandRows(rows){
   const out=[];
   rows.forEach(row=>{
     const timestamp = String(row[0]||'');
-    const rowDaerah = normDaerah(row[1]); // which daerah submitted
+    const daerah    = normDaerah(row[1]);
     const bertugas  = String(row[10]||'').trim();
     const pejawatan = String(row[12]||'').trim();
     const jantina   = String(row[13]||'').trim();
@@ -543,18 +531,15 @@ function expandRows(rows){
     const jam       = parseFloat(row[18])||0;
     const lain      = String(row[19]||'').trim();
 
-    // Check every daerah pair — include if nama OR balai has data
-    ALL_PAIRS.forEach(pair=>{
-      const balai = String(row[pair.balai]||'').trim();
-      const nama  = String(row[pair.nama] ||'').trim();
-      if(!nama && !balai) return; // skip empty pairs
-      out.push({
-        timestamp, daerah: pair.daerah,
-        balai: balai||'—', nama: nama||balai,
-        bertugas, pejawatan, jantina, pangkat,
-        jenis, jam, masa, tarikh, lain
-      });
-    });
+    // Combine: take first non-empty value from balai cols C,E,G,I (2,4,6,8)
+    const balai = [2,4,6,8].map(i=>String(row[i]||'').trim()).find(v=>v) || '—';
+    // Combine: take first non-empty value from nama cols D,F,H,J (3,5,7,9)
+    const nama  = [3,5,7,9].map(i=>String(row[i]||'').trim()).find(v=>v) || '';
+
+    if(!daerah) return;
+    if(!nama && balai==='—') return; // skip completely empty rows
+
+    out.push({timestamp,daerah,balai,nama:nama||balai,bertugas,pejawatan,jantina,pangkat,jenis,jam,masa,tarikh,lain});
   });
   return out;
 }
@@ -626,7 +611,9 @@ function renderAll(){
     const counts = ['MELAKA TENGAH','JASIN','ALOR GAJAH','IPK SSPDRM']
       .map(d=>d+': '+allData.filter(r=>r.daerah===d).length).join(' | ');
     const uniqueTarikh=[...new Set(allData.map(d=>d.tarikh))].slice(0,3).join(', ');
-    showAlert('info','Total: '+allData.length+' | '+counts+' | Tarikh sample: '+uniqueTarikh+' | Today: '+today+' | Today total: '+todayData.length);
+    // Show first 5 raw rows to debug
+    const rawDebug = allData.slice(0,5).map(r=>'[daerah='+r.daerah+'|balai='+r.balai+'|nama='+r.nama+'|tarikh='+r.tarikh+']').join(' ');
+    showAlert('info','Total: '+allData.length+' | '+counts+' | Today: '+today+' | TodayTotal: '+todayData.length+' | RAW: '+rawDebug);
   }
 
   // Only render tabs the user has access to
