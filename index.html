@@ -673,7 +673,7 @@ function expandRows(rows){
     const jenis     = String(row[16]||'').trim();
     const jam  = parseFloat(row[18])||0;
     const lain = String(row[19]||'').trim();    
-    const masa     = String(row[21]||'').trim();
+    const masa     = String(row[22]||'').trim();
     
     // Combine: take first non-empty value from balai cols C,E,G,I (2,4,6,8)
     const balai = [2,4,6,8].map(i=>String(row[i]||'').trim()).find(v=>v) || '—';
