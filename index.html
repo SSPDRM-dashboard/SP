@@ -671,10 +671,10 @@ function expandRows(rows){
     const pangkat   = String(row[14]||'').trim();
     const tarikh    = String(row[15]||'').trim();
     const jenis     = String(row[16]||'').trim();
-    const masa = row[21] ? row[21] : '—'; // HH:MM from Apps Script
     const jam  = parseFloat(row[18])||0;
-    const lain = String(row[19]||'').trim();
-
+    const lain = String(row[19]||'').trim();    
+    const masa     = String(row[21]||'').trim();
+    
     // Combine: take first non-empty value from balai cols C,E,G,I (2,4,6,8)
     const balai = [2,4,6,8].map(i=>String(row[i]||'').trim()).find(v=>v) || '—';
     // Combine: take first non-empty value from nama cols D,F,H,J (3,5,7,9)
