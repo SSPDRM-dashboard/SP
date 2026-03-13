@@ -234,6 +234,7 @@
   <div class="tab d2"      id="tab_btn_d2"    onclick="switchTab('d2')">🟢 Jasin</div>
   <div class="tab d3"      id="tab_btn_d3"    onclick="switchTab('d3')">🟡 Alor Gajah</div>
   <div class="tab d4"      id="tab_btn_d4"    onclick="switchTab('d4')">🟣 IPK SSPDRM</div>
+  <div class="tab hidden"  id="tab_btn_log"   onclick="switchTab('log')">📋 Log Masuk</div>
 </div>
 
 <main>
@@ -369,6 +370,43 @@
     </div>
   </div>
 
+  <!-- TAB: LOGIN LOG (ADMIN ONLY) -->
+  <div class="tab-content" id="tab-log">
+    <div class="date-banner navy">
+      <div class="date-banner-left"><div class="date-icon">📋</div><div>
+        <div class="date-banner-title">Log Masuk Pengguna</div>
+        <div class="date-banner-sub">Rekod semua aktiviti log masuk dan log keluar</div>
+      </div></div>
+      <div class="date-banner-count">
+        <div class="date-banner-num" id="log_count">—</div>
+        <div class="date-banner-label">Jumlah sesi</div>
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi"><div class="kpi-icon">👤</div><div class="kpi-label">Jumlah Sesi</div><div class="kpi-value" id="log_k1">—</div><div class="kpi-sub">Semua masa</div><div class="kpi-bar navy"></div></div>
+      <div class="kpi"><div class="kpi-icon">📅</div><div class="kpi-label">Sesi Hari Ini</div><div class="kpi-value" id="log_k2">—</div><div class="kpi-sub">Login hari ini</div><div class="kpi-bar gold"></div></div>
+      <div class="kpi"><div class="kpi-icon">👮</div><div class="kpi-label">Pengguna Unik</div><div class="kpi-value" id="log_k3">—</div><div class="kpi-sub">Nama berbeza</div><div class="kpi-bar green"></div></div>
+      <div class="kpi"><div class="kpi-icon">🔑</div><div class="kpi-label">Admin Login</div><div class="kpi-value" id="log_k4">—</div><div class="kpi-sub">Sesi admin</div><div class="kpi-bar red"></div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Rekod Log Masuk</div>
+        <button onclick="clearLog()" style="background:#dc2626;color:white;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-family:'Inter',sans-serif;font-weight:600;cursor:pointer;">🗑️ Padam Log</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead><tr>
+            <th>#</th><th>Nama Pengguna</th><th>Peranan</th><th>Tab Diakses</th>
+            <th>Tarikh Login</th><th>Masa Login</th><th>Masa Logout</th><th>Tempoh</th>
+          </tr></thead>
+          <tbody id="log_table"><tr><td colspan="8" class="loading">Tiada rekod log</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
 </main>
 <footer>Polis Diraja Malaysia &nbsp;·&nbsp; SSPDRM Melaka &nbsp;·&nbsp; Sistem Penugasan Anggota &nbsp;·&nbsp; <span id="footerRefresh">—</span></footer>
 </div><!-- end dashboardPage -->
@@ -381,11 +419,17 @@
 // role: 'daerah' = sees only their tab
 // ══════════════════════════════════════════
 const USERS = {
-  'admin':         { password: 'admin123',   role: 'admin',  tab: null },
-  'melakatengah':  { password: 'mt1234',     role: 'daerah', tab: 'd1' },
-  'jasin':         { password: 'jasin1234',  role: 'daerah', tab: 'd2' },
-  'alorgajah':     { password: 'ag1234',     role: 'daerah', tab: 'd3' },
-  'ipksspdrm':     { password: 'ipk1234',    role: 'daerah', tab: 'd4' },
+  'admin':         { password: 'admin123',  role: 'admin',  tab: null },
+  'rosziah':       { password: 'asp1528',   role: 'admin',  tab: null },
+  'melakatengah':  { password: 'mt1234',    role: 'daerah', tab: 'd1' },
+  'murugan':       { password: 'asp1216',   role: 'daerah', tab: 'd1' },
+  'wong':          { password: 'insp1654',  role: 'daerah', tab: 'd1' },
+  'jasin':         { password: 'jasin1234', role: 'daerah', tab: 'd2' },
+  'kamala':        { password: 'INSP1655',  role: 'daerah', tab: 'd2' },
+  'alorgajah':     { password: 'ag1234',    role: 'daerah', tab: 'd3' },
+  'lee':           { password: 'asp1518',   role: 'daerah', tab: 'd3' },
+  'shaharil':      { password: 'insp1214',  role: 'daerah', tab: 'd3' },
+  'ipksspdrm':     { password: 'ipk1234',   role: 'daerah', tab: 'd4' },
 };
 
 // Tab labels
@@ -412,6 +456,84 @@ const COLORS = ['#003087','#0a3fa8','#1d4ed8','#2563eb','#3b82f6','#60a5fa','#dc
 let allData=[], charts={}, countdownSec=1800, countdownTimer;
 let currentUser=null;
 
+// ── LOGIN LOG (stored in localStorage)
+function getLogs(){ try{ return JSON.parse(localStorage.getItem('loginLogs')||'[]'); }catch(e){ return []; } }
+function saveLogs(logs){ localStorage.setItem('loginLogs', JSON.stringify(logs)); }
+
+function recordLogin(user){
+  const logs = getLogs();
+  const now = new Date();
+  const entry = {
+    id: Date.now(),
+    username: user.username,
+    role: user.role,
+    tab: user.tab ? TAB_LABELS[user.tab] : 'Semua Tab',
+    loginDate: now.toLocaleDateString('ms-MY'),
+    loginTime: now.toLocaleTimeString('ms-MY'),
+    loginTs: now.getTime(),
+    logoutTime: '—',
+    logoutTs: null,
+    duration: '—'
+  };
+  logs.unshift(entry); // newest first
+  if(logs.length > 200) logs.pop(); // keep max 200 entries
+  saveLogs(logs);
+  return entry.id;
+}
+
+function recordLogout(loginId){
+  const logs = getLogs();
+  const entry = logs.find(l=>l.id===loginId);
+  if(entry){
+    const now = new Date();
+    entry.logoutTime = now.toLocaleTimeString('ms-MY');
+    entry.logoutTs = now.getTime();
+    const diffMs = now.getTime() - entry.loginTs;
+    const diffMin = Math.floor(diffMs/60000);
+    const diffSec = Math.floor((diffMs%60000)/1000);
+    entry.duration = diffMin+'m '+diffSec+'s';
+    saveLogs(logs);
+  }
+}
+
+function renderLogTab(){
+  const logs = getLogs();
+  const today = new Date().toLocaleDateString('ms-MY');
+  const todayLogs = logs.filter(l=>l.loginDate===today);
+  const uniqueUsers = new Set(logs.map(l=>l.username)).size;
+  const adminSessions = logs.filter(l=>l.role==='admin').length;
+
+  document.getElementById('log_count').textContent = logs.length;
+  document.getElementById('log_k1').textContent = logs.length;
+  document.getElementById('log_k2').textContent = todayLogs.length;
+  document.getElementById('log_k3').textContent = uniqueUsers;
+  document.getElementById('log_k4').textContent = adminSessions;
+
+  const tbody = document.getElementById('log_table');
+  if(!logs.length){
+    tbody.innerHTML='<tr><td colspan="8" class="empty-state" style="text-align:center;padding:32px;color:var(--muted);">Tiada rekod log</td></tr>';
+    return;
+  }
+  tbody.innerHTML = logs.map((l,i)=>`
+    <tr>
+      <td style="color:var(--muted);font-size:11px;">${i+1}</td>
+      <td><strong>${l.username}</strong></td>
+      <td><span class="badge ${l.role==='admin'?'badge-rci':'badge-apr'}">${l.role==='admin'?'Admin':'Daerah'}</span></td>
+      <td style="font-size:12px;">${l.tab}</td>
+      <td style="font-size:12px;">${l.loginDate}</td>
+      <td><strong>${l.loginTime}</strong></td>
+      <td style="font-size:12px;">${l.logoutTime}</td>
+      <td style="font-size:12px;color:var(--muted);">${l.duration}</td>
+    </tr>`).join('');
+}
+
+function clearLog(){
+  if(confirm('Padam semua rekod log masuk?')){
+    localStorage.removeItem('loginLogs');
+    renderLogTab();
+  }
+}
+
 // ── LOGIN
 function doLogin(){
   const u=document.getElementById('loginUser').value.trim().toLowerCase();
@@ -421,6 +543,7 @@ function doLogin(){
   if(USERS[u] && USERS[u].password===p){
     errEl.style.display='none';
     currentUser={username:u, ...USERS[u]};
+    currentUser.loginId = recordLogin(currentUser);
     sessionStorage.setItem('dashUser', JSON.stringify(currentUser));
     showDashboard();
   } else {
@@ -439,6 +562,12 @@ function showDashboard(){
     // Admin sees all tabs, show URL bar
     document.getElementById('urlBar').style.display='flex';
     ['today','d1','d2','d3','d4'].forEach(t=>document.getElementById('tab_btn_'+t).classList.remove('hidden'));
+    // Only username 'admin' can see the log tab
+    if(currentUser.username==='admin'){
+      document.getElementById('tab_btn_log').classList.remove('hidden');
+    } else {
+      document.getElementById('tab_btn_log').classList.add('hidden');
+    }
     switchTab('today');
   } else {
     // Daerah user sees only their tab, hide URL bar (use saved URL)
@@ -456,6 +585,7 @@ function showDashboard(){
 }
 
 function doLogout(){
+  if(currentUser && currentUser.loginId) recordLogout(currentUser.loginId);
   sessionStorage.removeItem('dashUser');
   currentUser=null;
   document.getElementById('loginPage').style.display='flex';
@@ -612,6 +742,7 @@ function switchTab(name){
   document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
   const tc=document.getElementById('tab-'+name);
   if(tc)tc.classList.add('active');
+  if(name==='log') renderLogTab();
 }
 
 // ── RENDER ALL
