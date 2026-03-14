@@ -221,7 +221,7 @@
   </div>
 </header>
 
-<div class="url-bar" id="urlBar" style="display:none;">
+<div class="url-bar" id="urlBar">
   <label>📋 Apps Script URL:</label>
   <input type="text" id="sheetUrl" placeholder="Paste Google Apps Script URL di sini..." />
   <button class="btn-load" onclick="loadData()">Muat Data</button>
@@ -444,14 +444,14 @@ const TAB_LABELS = {
 const BALAI_COLS    = [2,4,6,8];
 const NAMA_COLS     = [3,5,7,9];
 const BERTUGAS_COLS = [10,11];
-const DEFAULT_API = "https://script.google.com/macros/s/AKfycbzL2Yed3Pt6Xu9juCPOHK9vNOzWw3bAu_iAeZXprQySxrICySxKJuX9ua1LnO7FdKa4/exec";
+const PROXY = 'https://corsproxy.io/?';
 const DAERAH_MAP = {
   d1: 'MELAKA TENGAH',
   d2: 'JASIN',
   d3: 'ALOR GAJAH',
   d4: 'IPK SSPDRM'
 };
-const COLORS = ['#003087','#0a3fa8','#1d4ed8','#2563eb','#3b82f6','#60a5fa','#dc2626','#16a34a','#d97706','#7c3aed'];
+const FIXED_URL = 'https://script.google.com/macros/s/AKfycbzwWTgYO92mc4v9r-_dXWhyYp1qsMjscRKlO8VkXmzBLXp651mR_EquIfcKKsTiqqKj/exec';
 
 let allData=[], charts={}, countdownSec=1800, countdownTimer;
 let currentUser=null;
@@ -557,12 +557,14 @@ function showDashboard(){
   document.getElementById('dashboardPage').style.display='block';
   document.getElementById('userPillName').textContent=currentUser.username.toUpperCase();
 
+  // Always set the fixed URL in the input box
+  const urlInput = document.getElementById('sheetUrl');
+  if(urlInput) urlInput.value = FIXED_URL;
+
   // Show/hide tabs based on role
   if(currentUser.role==='admin'){
-    // Admin sees all tabs, show URL bar
     document.getElementById('urlBar').style.display='flex';
     ['today','d1','d2','d3','d4'].forEach(t=>document.getElementById('tab_btn_'+t).classList.remove('hidden'));
-    // Only username 'admin' can see the log tab
     if(currentUser.username==='admin'){
       document.getElementById('tab_btn_log').classList.remove('hidden');
     } else {
@@ -570,15 +572,18 @@ function showDashboard(){
     }
     switchTab('today');
   } else {
-    // Daerah user sees only their tab, hide URL bar (use saved URL)
+    // Daerah user — hide URL bar, auto-load silently
     document.getElementById('urlBar').style.display='none';
-    // Hide all tabs except their daerah
     ['today','d1','d2','d3','d4'].forEach(t=>{
       const el=document.getElementById('tab_btn_'+t);
       if(t===currentUser.tab){ el.classList.remove('hidden'); }
       else { el.classList.add('hidden'); }
     });
     switchTab(currentUser.tab);
+  }
+
+  loadData(); // auto-load for all users
+}
   }
 
   loadData();
@@ -659,6 +664,49 @@ function extractTime(ts){
 // ── NORMALISE DAERAH for matching (uppercase, trim, remove extra spaces)
 function normDaerah(s){ return String(s||'').toUpperCase().replace(/\s+/g,' ').trim(); }
 
+// ── FORMAT TIME from Google Sheets (handles all formats)
+function formatTime(val){
+  if(!val || val==='' || val==='0') return '—';
+  const s = String(val).trim();
+
+  // Already HH:MM or HH:MM:SS text format
+  if(/^\d{1,2}:\d{2}/.test(s)){
+    const parts = s.split(':');
+    return parts[0].padStart(2,'0') + ':' + parts[1];
+  }
+
+  // Google Sheets Date string: "Sat Dec 30 1899 12:18:43 GMT+0655 (Singapore Standard Time)"
+  // or any Date string — parse and extract local HH:MM
+  if(s.includes('GMT') || s.includes('Standard Time') || s.includes('Jan') || s.includes('Feb') ||
+     s.includes('Mar') || s.includes('Apr') || s.includes('May') || s.includes('Jun') ||
+     s.includes('Jul') || s.includes('Aug') || s.includes('Sep') || s.includes('Oct') ||
+     s.includes('Nov') || s.includes('Dec')){
+    // Extract HH:MM directly from the string using regex
+    const match = s.match(/(\d{1,2}):(\d{2}):\d{2}/);
+    if(match){
+      return match[1].padStart(2,'0') + ':' + match[2];
+    }
+  }
+
+  // ISO datetime: 2026-03-13T01:30:00.000Z
+  if(s.includes('T')){
+    const d = new Date(s);
+    const myt = new Date(d.getTime() + 8*60*60*1000);
+    return String(myt.getUTCHours()).padStart(2,'0') + ':' + String(myt.getUTCMinutes()).padStart(2,'0');
+  }
+
+  // Google Sheets decimal fraction: 0.375 = 09:00
+  const num = parseFloat(s);
+  if(!isNaN(num) && num > 0 && num < 1){
+    const totalMin = Math.round(num * 24 * 60);
+    const hh = Math.floor(totalMin / 60);
+    const mm = totalMin % 60;
+    return String(hh).padStart(2,'0') + ':' + String(mm).padStart(2,'0');
+  }
+
+  return s;
+}
+
 // ── EXPAND ROWS - combine all balai cols (2,4,6,8) and nama cols (3,5,7,9)
 function expandRows(rows){
   const out=[];
@@ -671,10 +719,10 @@ function expandRows(rows){
     const pangkat   = String(row[14]||'').trim();
     const tarikh    = String(row[15]||'').trim();
     const jenis     = String(row[16]||'').trim();
+    const masa = formatTime(row[17]);
     const jam  = parseFloat(row[18])||0;
-    const lain = String(row[19]||'').trim();    
-    const masa     = String(row[22]||'').trim();
-    
+    const lain = String(row[19]||'').trim();
+
     // Combine: take first non-empty value from balai cols C,E,G,I (2,4,6,8)
     const balai = [2,4,6,8].map(i=>String(row[i]||'').trim()).find(v=>v) || '—';
     // Combine: take first non-empty value from nama cols D,F,H,J (3,5,7,9)
@@ -690,12 +738,9 @@ function expandRows(rows){
 
 // ── LOAD DATA
 async function loadData(){
-  const urlInput=document.getElementById('sheetUrl');
-  let url=urlInput?urlInput.value.trim():'';
-
-  // Daerah users use saved URL
-  if(!url) url=localStorage.getItem('dashboardUrl')||'';
-  if(!url){showAlert('error','Sila masukkan Apps Script URL anda.');return;}
+  const url = FIXED_URL;
+  const urlInput = document.getElementById('sheetUrl');
+  if(urlInput) urlInput.value = FIXED_URL;
 
   showAlert('info','⏳ Memuatkan data...');showAlert('error','');
 
@@ -714,15 +759,16 @@ async function loadData(){
   // Debug: show unique daerah values found
   if(currentUser&&currentUser.role==='admin'){
     const uniqueDaerah=[...new Set(allData.map(d=>d.daerah))].join(' · ');
+    const masaSample=allData.slice(0,3).map(r=>'['+r.masa+']').join(' ');
     console.log('Daerah dalam sheet:', uniqueDaerah);
-    showAlert('info','✅ '+allData.length+' rekod dimuatkan · Daerah: '+uniqueDaerah);
+    showAlert('info','✅ '+allData.length+' rekod · Daerah: '+uniqueDaerah+' · Masa sample: '+masaSample);
   }
 
   showAlert('info','');showAlert('error','');
   const now=new Date().toLocaleTimeString('ms-MY');
   document.getElementById('liveText').textContent='Dikemaskini '+now;
   document.getElementById('footerRefresh').textContent='Terakhir dikemaskini: '+now;
-  if(urlInput&&urlInput.value.trim()) localStorage.setItem('dashboardUrl',urlInput.value.trim());
+  if(urlInput) urlInput.value = FIXED_URL;
 
   renderAll();
   startCountdown();
