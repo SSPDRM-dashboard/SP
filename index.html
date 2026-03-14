@@ -7,60 +7,24 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --navy:#003087;--navy-dark:#001f5c;--navy-mid:#0a3fa8;
-    --gold:#FFD700;--gold-dark:#c9a800;
-    --dark:#0f172a;--muted:#64748b;
-    --card:#fff;--bg:#f1f5f9;--border:#e2e8f0;
-    --red:#dc2626;--green:#16a34a;--amber:#d97706;
-  }
+  :root{--navy:#003087;--navy-dark:#001f5c;--navy-mid:#0a3fa8;--gold:#FFD700;--gold-dark:#c9a800;--dark:#0f172a;--muted:#64748b;--card:#fff;--bg:#f1f5f9;--border:#e2e8f0;--red:#dc2626;--green:#16a34a;--amber:#d97706;}
   *{margin:0;padding:0;box-sizing:border-box;}
   body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;}
-
-  /* ── LOGIN PAGE ── */
-  #loginPage{
-    display:flex;align-items:center;justify-content:center;
-    min-height:100vh;
-    background:linear-gradient(135deg,var(--navy-dark) 0%,var(--navy-mid) 60%,#1d4ed8 100%);
-    position:fixed;inset:0;z-index:999;
-  }
-  .login-box{
-    background:white;border-radius:20px;padding:40px 44px;
-    width:100%;max-width:420px;
-    box-shadow:0 24px 64px rgba(0,0,0,0.35);
-    text-align:center;
-  }
+  #loginPage{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,var(--navy-dark) 0%,var(--navy-mid) 60%,#1d4ed8 100%);position:fixed;inset:0;z-index:999;}
+  .login-box{background:white;border-radius:20px;padding:40px 44px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,0.35);text-align:center;}
   .login-logo{width:80px;height:80px;object-fit:contain;margin-bottom:16px;}
   .login-title{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--navy);letter-spacing:.04em;margin-bottom:4px;}
   .login-sub{font-size:12px;color:var(--muted);margin-bottom:28px;letter-spacing:.06em;text-transform:uppercase;}
   .login-field{margin-bottom:16px;text-align:left;}
   .login-field label{font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;}
-  .login-field input{
-    width:100%;border:1.5px solid var(--border);border-radius:10px;
-    padding:11px 14px;font-size:14px;font-family:'Inter',sans-serif;
-    outline:none;color:var(--dark);transition:border-color .2s;
-  }
+  .login-field input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;font-size:14px;font-family:'Inter',sans-serif;outline:none;color:var(--dark);transition:border-color .2s;}
   .login-field input:focus{border-color:var(--navy);}
-  .btn-login{
-    width:100%;background:linear-gradient(135deg,var(--navy-dark),var(--navy-mid));
-    color:white;border:none;border-radius:10px;padding:13px;
-    font-size:14px;font-family:'Inter',sans-serif;font-weight:700;
-    cursor:pointer;margin-top:8px;letter-spacing:.04em;
-    transition:opacity .2s;
-  }
+  .btn-login{width:100%;background:linear-gradient(135deg,var(--navy-dark),var(--navy-mid));color:white;border:none;border-radius:10px;padding:13px;font-size:14px;font-family:'Inter',sans-serif;font-weight:700;cursor:pointer;margin-top:8px;letter-spacing:.04em;transition:opacity .2s;}
   .btn-login:hover{opacity:.9;}
-  .login-error{
-    background:#FFF0F0;border:1px solid #FFCDD2;color:#C0392B;
-    border-radius:8px;padding:10px 14px;font-size:13px;
-    margin-top:14px;display:none;
-  }
+  .login-error{background:#FFF0F0;border:1px solid #FFCDD2;color:#C0392B;border-radius:8px;padding:10px 14px;font-size:13px;margin-top:14px;display:none;}
   .login-footer{font-size:11px;color:var(--muted);margin-top:20px;}
   .login-divider{border:none;border-top:1px solid var(--border);margin:20px 0;}
-  .user-role-badge{display:inline-flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;color:var(--muted);}
-
-  /* ── DASHBOARD ── */
   #dashboardPage{display:none;}
-
   header{background:linear-gradient(135deg,var(--navy-dark) 0%,var(--navy-mid) 100%);padding:0 32px;height:72px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(0,48,135,0.4);border-bottom:3px solid var(--gold);}
   .header-left{display:flex;align-items:center;gap:16px;}
   .pdrm-logo{width:48px;height:48px;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));}
@@ -73,11 +37,10 @@
   @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
   .live-text{font-size:12px;color:white;font-weight:500;}
   .date-day{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;color:var(--gold);}
-  .user-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:5px 12px;cursor:pointer;}
+  .user-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:5px 12px;}
   .user-pill span{font-size:12px;color:white;font-weight:600;}
   .btn-logout{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:white;border-radius:8px;padding:5px 12px;font-size:12px;font-family:'Inter',sans-serif;font-weight:600;cursor:pointer;}
   .btn-logout:hover{background:rgba(255,255,255,0.25);}
-
   .url-bar{background:white;border-bottom:1px solid var(--border);padding:10px 32px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:0 1px 4px rgba(0,0,0,0.06);}
   .url-bar label{font-size:12px;color:var(--muted);font-weight:600;white-space:nowrap;}
   .url-bar input{flex:1;min-width:260px;border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-size:12px;font-family:'Inter',sans-serif;outline:none;color:var(--dark);}
@@ -85,7 +48,6 @@
   .btn-load{background:var(--navy);color:white;border:none;border-radius:8px;padding:7px 18px;font-size:12px;font-family:'Inter',sans-serif;font-weight:600;cursor:pointer;}
   .btn-load:hover{background:var(--navy-dark);}
   .next-refresh{font-size:11px;color:var(--muted);margin-left:auto;}
-
   .tabs{background:white;border-bottom:2px solid var(--border);padding:0 32px;display:flex;gap:0;overflow-x:auto;}
   .tab{padding:14px 22px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;white-space:nowrap;}
   .tab:hover{color:var(--navy);}
@@ -95,12 +57,10 @@
   .tab.d3.active{color:#b45309;border-bottom-color:#b45309;}
   .tab.d4.active{color:#7c3aed;border-bottom-color:#7c3aed;}
   .tab.hidden{display:none;}
-
   main{padding:24px 32px;max-width:1400px;margin:0 auto;}
   .alert{border-radius:10px;padding:12px 16px;font-size:13px;margin-bottom:16px;display:none;}
   .alert-error{background:#FFF0F0;border:1px solid #FFCDD2;color:#C0392B;}
   .alert-info{background:#EFF6FF;border:1px solid #BFDBFE;color:#1e40af;}
-
   .date-banner{border-radius:14px;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;color:white;}
   .date-banner.navy{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);}
   .date-banner.red{background:linear-gradient(135deg,#991b1b 0%,#dc2626 100%);}
@@ -114,7 +74,6 @@
   .date-banner-count{text-align:right;}
   .date-banner-num{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;color:var(--gold);line-height:1;}
   .date-banner-label{font-size:11px;color:rgba(255,255,255,0.7);}
-
   .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px;}
   .kpi{background:var(--card);border-radius:12px;padding:18px 20px;border:1px solid var(--border);position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;}
   .kpi:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.08);}
@@ -123,19 +82,13 @@
   .kpi-value{font-family:'Rajdhani',sans-serif;font-size:34px;font-weight:700;color:var(--dark);line-height:1;}
   .kpi-sub{font-size:11px;color:var(--muted);margin-top:4px;}
   .kpi-bar{position:absolute;bottom:0;left:0;right:0;height:3px;}
-  .kpi-bar.navy{background:var(--navy);}
-  .kpi-bar.gold{background:var(--gold-dark);}
-  .kpi-bar.green{background:var(--green);}
-  .kpi-bar.red{background:var(--red);}
-  .kpi-bar.amber{background:var(--amber);}
-
+  .kpi-bar.navy{background:var(--navy);} .kpi-bar.gold{background:var(--gold-dark);} .kpi-bar.green{background:var(--green);} .kpi-bar.red{background:var(--red);} .kpi-bar.amber{background:var(--amber);}
   .grid-wide{display:grid;grid-template-columns:3fr 2fr;gap:18px;margin-bottom:18px;}
   .card{background:var(--card);border-radius:12px;padding:20px 22px;border:1px solid var(--border);margin-bottom:18px;}
   .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
   .card-title{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--dark);}
   .card-badge{font-size:11px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:3px 8px;color:var(--muted);font-weight:600;}
   .card canvas{max-height:220px;}
-
   .table-wrap{background:var(--card);border-radius:12px;border:1px solid var(--border);overflow:hidden;margin-bottom:18px;}
   table{width:100%;border-collapse:collapse;font-size:13px;}
   thead tr{background:#f8fafc;border-bottom:2px solid var(--border);}
@@ -144,112 +97,64 @@
   tbody tr:last-child td{border-bottom:none;}
   tbody tr:hover{background:#f8fafc;}
   .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
-  .badge-lain{background:#dcfce7;color:#15803d;}
-  .badge-pejabat{background:#fef9c3;color:#854d0e;}
-  .badge-rci{background:#fce7f3;color:#9d174d;}
-  .badge-apr{background:#dbeafe;color:#1e40af;}
-
-  .tab-content{display:none;}
-  .tab-content.active{display:block;}
+  .badge-lain{background:#dcfce7;color:#15803d;} .badge-pejabat{background:#fef9c3;color:#854d0e;} .badge-rci{background:#fce7f3;color:#9d174d;} .badge-apr{background:#dbeafe;color:#1e40af;}
+  .tab-content{display:none;} .tab-content.active{display:block;}
   .loading{text-align:center;padding:32px;color:var(--muted);font-size:13px;}
   .empty-state{text-align:center;padding:48px 24px;color:var(--muted);}
-  .empty-icon{font-size:40px;margin-bottom:12px;}
-  .empty-text{font-size:14px;font-weight:500;}
-
+  .empty-icon{font-size:40px;margin-bottom:12px;} .empty-text{font-size:14px;font-weight:500;}
   footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);margin-top:8px;}
-  @media(max-width:768px){
-    main{padding:16px;}
-    .grid-wide{grid-template-columns:1fr;}
-    header,.url-bar,.tabs{padding-left:16px;padding-right:16px;}
-    .login-box{margin:16px;padding:28px 24px;}
-  }
+  @media(max-width:768px){main{padding:16px;}.grid-wide{grid-template-columns:1fr;}header,.url-bar,.tabs{padding-left:16px;padding-right:16px;}.login-box{margin:16px;padding:28px 24px;}}
 </style>
 </head>
 <body>
 
-<!-- ══════════════ LOGIN PAGE ══════════════ -->
 <div id="loginPage">
   <div class="login-box">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Seal_of_the_Royal_Malaysia_Police.svg/240px-Seal_of_the_Royal_Malaysia_Police.svg.png"
-         class="login-logo" alt="PDRM" onerror="this.style.display='none'">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Seal_of_the_Royal_Malaysia_Police.svg/240px-Seal_of_the_Royal_Malaysia_Police.svg.png" class="login-logo" alt="PDRM" onerror="this.style.display='none'">
     <div class="login-title">SSPDRM MELAKA</div>
     <div class="login-sub">Sistem Penugasan Anggota</div>
-
-    <div class="login-field">
-      <label>Nama Pengguna</label>
-      <input type="text" id="loginUser" placeholder="Masukkan nama pengguna..." autocomplete="username" />
-    </div>
-    <div class="login-field">
-      <label>Kata Laluan</label>
-      <input type="password" id="loginPass" placeholder="Masukkan kata laluan..." autocomplete="current-password"
-             onkeydown="if(event.key==='Enter')doLogin()" />
-    </div>
+    <div class="login-field"><label>Nama Pengguna</label><input type="text" id="loginUser" placeholder="Masukkan nama pengguna..." autocomplete="username"/></div>
+    <div class="login-field"><label>Kata Laluan</label><input type="password" id="loginPass" placeholder="Masukkan kata laluan..." autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
     <button class="btn-login" onclick="doLogin()">LOG MASUK</button>
     <div class="login-error" id="loginError">❌ Nama pengguna atau kata laluan tidak sah.</div>
-
     <hr class="login-divider">
     <div class="login-footer">Polis Diraja Malaysia · SSPDRM Melaka<br>Sistem ini adalah untuk kegunaan rasmi sahaja.</div>
   </div>
 </div>
 
-<!-- ══════════════ DASHBOARD PAGE ══════════════ -->
 <div id="dashboardPage">
-
 <header>
   <div class="header-left">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Seal_of_the_Royal_Malaysia_Police.svg/240px-Seal_of_the_Royal_Malaysia_Police.svg.png"
-         class="pdrm-logo" alt="PDRM" onerror="this.style.display='none'">
-    <div class="header-titles">
-      <div class="header-title">SSPDRM MELAKA</div>
-      <div class="header-sub">Sistem Penugasan Anggota · Dashboard</div>
-    </div>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Seal_of_the_Royal_Malaysia_Police.svg/240px-Seal_of_the_Royal_Malaysia_Police.svg.png" class="pdrm-logo" alt="PDRM" onerror="this.style.display='none'">
+    <div class="header-titles"><div class="header-title">SSPDRM MELAKA</div><div class="header-sub">Sistem Penugasan Anggota · Dashboard</div></div>
   </div>
   <div class="header-right">
-    <div style="text-align:right;">
-      <div class="date-day" id="headerDate">—</div>
-      <div style="font-size:11px;color:rgba(255,255,255,0.6);" id="headerTime">—</div>
-    </div>
-    <div class="live-badge">
-      <div class="live-dot"></div>
-      <div class="live-text" id="liveText">Live</div>
-    </div>
-    <div class="user-pill">
-      <span>👤</span>
-      <span id="userPillName">—</span>
-    </div>
+    <div style="text-align:right;"><div class="date-day" id="headerDate">—</div><div style="font-size:11px;color:rgba(255,255,255,0.6);" id="headerTime">—</div></div>
+    <div class="live-badge"><div class="live-dot"></div><div class="live-text" id="liveText">Live</div></div>
+    <div class="user-pill"><span>👤</span><span id="userPillName">—</span></div>
     <button class="btn-logout" onclick="doLogout()">Log Keluar</button>
   </div>
 </header>
-
-<div class="url-bar" id="urlBar">
+<div class="url-bar" id="urlBar" style="display:none;">
   <label>📋 Apps Script URL:</label>
-  <input type="text" id="sheetUrl" placeholder="Paste Google Apps Script URL di sini..." />
+  <input type="text" id="sheetUrl"/>
   <button class="btn-load" onclick="loadData()">Muat Data</button>
   <span class="next-refresh" id="nextRefresh"></span>
 </div>
-
-<div class="tabs" id="tabBar">
-  <div class="tab active"  id="tab_btn_today" onclick="switchTab('today')">📅 Hari Ini (Semua)</div>
-  <div class="tab d1"      id="tab_btn_d1"    onclick="switchTab('d1')">🔴 Melaka Tengah</div>
-  <div class="tab d2"      id="tab_btn_d2"    onclick="switchTab('d2')">🟢 Jasin</div>
-  <div class="tab d3"      id="tab_btn_d3"    onclick="switchTab('d3')">🟡 Alor Gajah</div>
-  <div class="tab d4"      id="tab_btn_d4"    onclick="switchTab('d4')">🟣 IPK SSPDRM</div>
-  <div class="tab hidden"  id="tab_btn_log"   onclick="switchTab('log')">📋 Log Masuk</div>
+<div class="tabs">
+  <div class="tab active" id="tab_btn_today" onclick="switchTab('today')">📅 Hari Ini (Semua)</div>
+  <div class="tab d1"     id="tab_btn_d1"    onclick="switchTab('d1')">🔴 Melaka Tengah</div>
+  <div class="tab d2"     id="tab_btn_d2"    onclick="switchTab('d2')">🟢 Jasin</div>
+  <div class="tab d3"     id="tab_btn_d3"    onclick="switchTab('d3')">🟡 Alor Gajah</div>
+  <div class="tab d4"     id="tab_btn_d4"    onclick="switchTab('d4')">🟣 IPK SSPDRM</div>
+  <div class="tab hidden" id="tab_btn_log"   onclick="switchTab('log')">📋 Log Masuk</div>
 </div>
-
 <main>
   <div class="alert alert-error" id="alertError"></div>
   <div class="alert alert-info"  id="alertInfo"></div>
 
-  <!-- TAB: HARI INI SEMUA -->
   <div class="tab-content active" id="tab-today">
-    <div class="date-banner navy">
-      <div class="date-banner-left"><div class="date-icon">📅</div><div>
-        <div class="date-banner-title" id="today_title">—</div>
-        <div class="date-banner-sub">Semua daerah · Tarikh penugasan hari ini</div>
-      </div></div>
-      <div class="date-banner-count"><div class="date-banner-num" id="today_count">—</div><div class="date-banner-label">Jumlah anggota bertugas</div></div>
-    </div>
+    <div class="date-banner navy"><div class="date-banner-left"><div class="date-icon">📅</div><div><div class="date-banner-title" id="today_title">—</div><div class="date-banner-sub">Semua daerah · Tarikh penugasan hari ini</div></div></div><div class="date-banner-count"><div class="date-banner-num" id="today_count">—</div><div class="date-banner-label">Jumlah anggota bertugas</div></div></div>
     <div class="kpi-row">
       <div class="kpi"><div class="kpi-icon">👮</div><div class="kpi-label">Jumlah Anggota</div><div class="kpi-value" id="today_k1">—</div><div class="kpi-sub">Semua daerah</div><div class="kpi-bar navy"></div></div>
       <div class="kpi"><div class="kpi-icon">🏢</div><div class="kpi-label">Daerah Aktif</div><div class="kpi-value" id="today_k2">—</div><div class="kpi-sub">Hari ini</div><div class="kpi-bar gold"></div></div>
@@ -263,19 +168,12 @@
     </div>
     <div class="table-wrap">
       <div class="card-header" style="padding:16px 20px 0;"><div class="card-title">Senarai Anggota Bertugas Hari Ini</div><div class="card-badge" id="today_tb">—</div></div>
-      <div style="overflow-x:auto;margin-top:12px;">
-        <table><thead><tr><th>#</th><th>Daerah</th><th>Nama & No. Badan</th><th>Balai Pendaftaran</th><th>Balai Bertugas</th><th>Jenis Tugasan</th><th>Jam</th><th>Masa Mula</th></tr></thead>
-        <tbody id="today_table"><tr><td colspan="8" class="loading">Memuatkan data...</td></tr></tbody></table>
-      </div>
+      <div style="overflow-x:auto;margin-top:12px;"><table><thead><tr><th>#</th><th>Daerah</th><th>Nama & No. Badan</th><th>Balai Pendaftaran</th><th>Balai Bertugas</th><th>Jenis Tugasan</th><th>Jam</th><th>Masa Mula</th></tr></thead><tbody id="today_table"><tr><td colspan="8" class="loading">Memuatkan data...</td></tr></tbody></table></div>
     </div>
   </div>
 
-  <!-- TAB: MELAKA TENGAH -->
   <div class="tab-content" id="tab-d1">
-    <div class="date-banner red">
-      <div class="date-banner-left"><div class="date-icon">🔴</div><div><div class="date-banner-title">Melaka Tengah</div><div class="date-banner-sub" id="d1_sub">—</div></div></div>
-      <div class="date-banner-count"><div class="date-banner-num" id="d1_count">—</div><div class="date-banner-label">Anggota bertugas</div></div>
-    </div>
+    <div class="date-banner red"><div class="date-banner-left"><div class="date-icon">🔴</div><div><div class="date-banner-title">Melaka Tengah</div><div class="date-banner-sub" id="d1_sub">—</div></div></div><div class="date-banner-count"><div class="date-banner-num" id="d1_count">—</div><div class="date-banner-label">Anggota bertugas</div></div></div>
     <div class="kpi-row">
       <div class="kpi"><div class="kpi-icon">👮</div><div class="kpi-label">Jumlah Anggota</div><div class="kpi-value" id="d1_k1">—</div><div class="kpi-sub">Hari ini</div><div class="kpi-bar red"></div></div>
       <div class="kpi"><div class="kpi-icon">⏱️</div><div class="kpi-label">Jumlah Jam</div><div class="kpi-value" id="d1_k2">—</div><div class="kpi-sub">Jam penugasan</div><div class="kpi-bar gold"></div></div>
@@ -288,19 +186,12 @@
     </div>
     <div class="table-wrap">
       <div class="card-header" style="padding:16px 20px 0;"><div class="card-title">Senarai Anggota — Melaka Tengah</div><div class="card-badge" id="d1_tb">—</div></div>
-      <div style="overflow-x:auto;margin-top:12px;">
-        <table><thead><tr><th>#</th><th>Pangkat</th><th>Nama & No. Badan</th><th>Balai Pendaftaran</th><th>Balai Bertugas</th><th>Jenis Tugasan</th><th>Jam</th><th>Masa Mula</th><th>Jantina</th><th>Pejawatan</th></tr></thead>
-        <tbody id="d1_table"><tr><td colspan="8" class="loading">Memuatkan data...</td></tr></tbody></table>
-      </div>
+      <div style="overflow-x:auto;margin-top:12px;"><table><thead><tr><th>#</th><th>Pangkat</th><th>Nama & No. Badan</th><th>Balai Pendaftaran</th><th>Balai Bertugas</th><th>Jenis Tugasan</th><th>Jam</th><th>Masa Mula</th><th>Jantina</th><th>Pejawatan</th></tr></thead><tbody id="d1_table"><tr><td colspan="10" class="loading">Memuatkan data...</td></tr></tbody></table></div>
     </div>
   </div>
 
-  <!-- TAB: JASIN -->
   <div class="tab-content" id="tab-d2">
-    <div class="date-banner green">
-      <div class="date-banner-left"><div class="date-icon">🟢</div><div><div class="date-banner-title">Jasin</div><div class="date-banner-sub" id="d2_sub">—</div></div></div>
-      <div class="date-banner-count"><div class="date-banner-num" id="d2_count">—</div><div class="date-banner-label">Anggota bertugas</div></div>
-    </div>
+    <div class="date-banner green"><div class="date-banner-left"><div class="date-icon">🟢</div><div><div class="date-banner-title">Jasin</div><div class="date-banner-sub" id="d2_sub">—</div></div></div><div class="date-banner-count"><div class="date-banner-num" id="d2_count">—</div><div class="date-banner-label">Anggota bertugas</div></div></div>
     <div class="kpi-row">
       <div class="kpi"><div class="kpi-icon">👮</div><div class="kpi-label">Jumlah Anggota</div><div class="kpi-value" id="d2_k1">—</div><div class="kpi-sub">Hari ini</div><div class="kpi-bar green"></div></div>
       <div class="kpi"><div class="kpi-icon">⏱️</div><div class="kpi-label">Jumlah Jam</div><div class="kpi-value" id="d2_k2">—</div><div class="kpi-sub">Jam penugasan</div><div class="kpi-bar gold"></div></div>
@@ -313,19 +204,12 @@
     </div>
     <div class="table-wrap">
       <div class="card-header" style="padding:16px 20px 0;"><div class="card-title">Senarai Anggota — Jasin</div><div class="card-badge" id="d2_tb">—</div></div>
-      <div style="overflow-x:auto;margin-top:12px;">
-        <table><thead><tr><th>#</th><th>Pangkat</th><th>Nama & No. Badan</th><th>Balai Pendaftaran</th><th>Balai Bertugas</th><th>Jenis Tugasan</th><th>Jam</th><th>Masa Mula</th><th>Jantina</th><th>Pejawatan</th></tr></thead>
-        <tbody id="d2_table"><tr><td colspan="8" class="loading">Memuatkan data...</td></tr></tbody></table>
-      </div>
+      <div style="overflow-x:auto;margin-top:12px;"><table><thead><tr><th>#</th><th>Pangkat</th><th>Nama & No. Badan</th><th>Balai Pendaftaran</th><th>Balai Bertugas</th><th>Jenis Tugasan</th><th>Jam</th><th>Masa Mula</th><th>Jantina</th><th>Pejawatan</th></tr></thead><tbody id="d2_table"><tr><td colspan="10" class="loading">Memuatkan data...</td></tr></tbody></table></div>
     </div>
   </div>
 
-  <!-- TAB: ALOR GAJAH -->
   <div class="tab-content" id="tab-d3">
-    <div class="date-banner amber">
-      <div class="date-banner-left"><div class="date-icon">🟡</div><div><div class="date-banner-title">Alor Gajah</div><div class="date-banner-sub" id="d3_sub">—</div></div></div>
-      <div class="date-banner-count"><div class="date-banner-num" id="d3_count">—</div><div class="date-banner-label">Anggota bertugas</div></div>
-    </div>
+    <div class="date-banner amber"><div class="date-banner-left"><div class="date-icon">🟡</div><div><div class="date-banner-title">Alor Gajah</div><div class="date-banner-sub" id="d3_sub">—</div></div></div><div class="date-banner-count"><div class="date-banner-num" id="d3_count">—</div><div class="date-banner-label">Anggota bertugas</div></div></div>
     <div class="kpi-row">
       <div class="kpi"><div class="kpi-icon">👮</div><div class="kpi-label">Jumlah Anggota</div><div class="kpi-value" id="d3_k1">—</div><div class="kpi-sub">Hari ini</div><div class="kpi-bar amber"></div></div>
       <div class="kpi"><div class="kpi-icon">⏱️</div><div class="kpi-label">Jumlah Jam</div><div class="kpi-value" id="d3_k2">—</div><div class="kpi-sub">Jam penugasan</div><div class="kpi-bar gold"></div></div>
@@ -338,19 +222,12 @@
     </div>
     <div class="table-wrap">
       <div class="card-header" style="padding:16px 20px 0;"><div class="card-title">Senarai Anggota — Alor Gajah</div><div class="card-badge" id="d3_tb">—</div></div>
-      <div style="overflow-x:auto;margin-top:12px;">
-        <table><thead><tr><th>#</th><th>Pangkat</th><th>Nama & No. Badan</th><th>Balai Pendaftaran</th><th>Balai Bertugas</th><th>Jenis Tugasan</th><th>Jam</th><th>Masa Mula</th><th>Jantina</th><th>Pejawatan</th></tr></thead>
-        <tbody id="d3_table"><tr><td colspan="8" class="loading">Memuatkan data...</td></tr></tbody></table>
-      </div>
+      <div style="overflow-x:auto;margin-top:12px;"><table><thead><tr><th>#</th><th>Pangkat</th><th>Nama & No. Badan</th><th>Balai Pendaftaran</th><th>Balai Bertugas</th><th>Jenis Tugasan</th><th>Jam</th><th>Masa Mula</th><th>Jantina</th><th>Pejawatan</th></tr></thead><tbody id="d3_table"><tr><td colspan="10" class="loading">Memuatkan data...</td></tr></tbody></table></div>
     </div>
   </div>
 
-  <!-- TAB: IPK SSPDRM -->
   <div class="tab-content" id="tab-d4">
-    <div class="date-banner purple">
-      <div class="date-banner-left"><div class="date-icon">🟣</div><div><div class="date-banner-title">IPK SSPDRM</div><div class="date-banner-sub" id="d4_sub">—</div></div></div>
-      <div class="date-banner-count"><div class="date-banner-num" id="d4_count">—</div><div class="date-banner-label">Anggota bertugas</div></div>
-    </div>
+    <div class="date-banner purple"><div class="date-banner-left"><div class="date-icon">🟣</div><div><div class="date-banner-title">IPK SSPDRM</div><div class="date-banner-sub" id="d4_sub">—</div></div></div><div class="date-banner-count"><div class="date-banner-num" id="d4_count">—</div><div class="date-banner-label">Anggota bertugas</div></div></div>
     <div class="kpi-row">
       <div class="kpi"><div class="kpi-icon">👮</div><div class="kpi-label">Jumlah Anggota</div><div class="kpi-value" id="d4_k1">—</div><div class="kpi-sub">Hari ini</div><div class="kpi-bar navy"></div></div>
       <div class="kpi"><div class="kpi-icon">⏱️</div><div class="kpi-label">Jumlah Jam</div><div class="kpi-value" id="d4_k2">—</div><div class="kpi-sub">Jam penugasan</div><div class="kpi-bar gold"></div></div>
@@ -363,188 +240,81 @@
     </div>
     <div class="table-wrap">
       <div class="card-header" style="padding:16px 20px 0;"><div class="card-title">Senarai Anggota — IPK SSPDRM</div><div class="card-badge" id="d4_tb">—</div></div>
-      <div style="overflow-x:auto;margin-top:12px;">
-        <table><thead><tr><th>#</th><th>Pangkat</th><th>Nama & No. Badan</th><th>Balai Pendaftaran</th><th>Balai Bertugas</th><th>Jenis Tugasan</th><th>Jam</th><th>Masa Mula</th><th>Jantina</th><th>Pejawatan</th></tr></thead>
-        <tbody id="d4_table"><tr><td colspan="8" class="loading">Memuatkan data...</td></tr></tbody></table>
-      </div>
+      <div style="overflow-x:auto;margin-top:12px;"><table><thead><tr><th>#</th><th>Pangkat</th><th>Nama & No. Badan</th><th>Balai Pendaftaran</th><th>Balai Bertugas</th><th>Jenis Tugasan</th><th>Jam</th><th>Masa Mula</th><th>Jantina</th><th>Pejawatan</th></tr></thead><tbody id="d4_table"><tr><td colspan="10" class="loading">Memuatkan data...</td></tr></tbody></table></div>
     </div>
   </div>
 
-  <!-- TAB: LOGIN LOG (ADMIN ONLY) -->
   <div class="tab-content" id="tab-log">
-    <div class="date-banner navy">
-      <div class="date-banner-left"><div class="date-icon">📋</div><div>
-        <div class="date-banner-title">Log Masuk Pengguna</div>
-        <div class="date-banner-sub">Rekod semua aktiviti log masuk dan log keluar</div>
-      </div></div>
-      <div class="date-banner-count">
-        <div class="date-banner-num" id="log_count">—</div>
-        <div class="date-banner-label">Jumlah sesi</div>
-      </div>
-    </div>
-
+    <div class="date-banner navy"><div class="date-banner-left"><div class="date-icon">📋</div><div><div class="date-banner-title">Log Masuk Pengguna</div><div class="date-banner-sub">Rekod semua aktiviti log masuk dan log keluar</div></div></div><div class="date-banner-count"><div class="date-banner-num" id="log_count">—</div><div class="date-banner-label">Jumlah sesi</div></div></div>
     <div class="kpi-row">
       <div class="kpi"><div class="kpi-icon">👤</div><div class="kpi-label">Jumlah Sesi</div><div class="kpi-value" id="log_k1">—</div><div class="kpi-sub">Semua masa</div><div class="kpi-bar navy"></div></div>
       <div class="kpi"><div class="kpi-icon">📅</div><div class="kpi-label">Sesi Hari Ini</div><div class="kpi-value" id="log_k2">—</div><div class="kpi-sub">Login hari ini</div><div class="kpi-bar gold"></div></div>
       <div class="kpi"><div class="kpi-icon">👮</div><div class="kpi-label">Pengguna Unik</div><div class="kpi-value" id="log_k3">—</div><div class="kpi-sub">Nama berbeza</div><div class="kpi-bar green"></div></div>
       <div class="kpi"><div class="kpi-icon">🔑</div><div class="kpi-label">Admin Login</div><div class="kpi-value" id="log_k4">—</div><div class="kpi-sub">Sesi admin</div><div class="kpi-bar red"></div></div>
     </div>
-
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">Rekod Log Masuk</div>
-        <button onclick="clearLog()" style="background:#dc2626;color:white;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-family:'Inter',sans-serif;font-weight:600;cursor:pointer;">🗑️ Padam Log</button>
-      </div>
-      <div style="overflow-x:auto;">
-        <table>
-          <thead><tr>
-            <th>#</th><th>Nama Pengguna</th><th>Peranan</th><th>Tab Diakses</th>
-            <th>Tarikh Login</th><th>Masa Login</th><th>Masa Logout</th><th>Tempoh</th>
-          </tr></thead>
-          <tbody id="log_table"><tr><td colspan="8" class="loading">Tiada rekod log</td></tr></tbody>
-        </table>
-      </div>
+      <div class="card-header"><div class="card-title">Rekod Log Masuk</div><button onclick="clearLog()" style="background:#dc2626;color:white;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-family:'Inter',sans-serif;font-weight:600;cursor:pointer;">🗑️ Padam Log</button></div>
+      <div style="overflow-x:auto;"><table><thead><tr><th>#</th><th>Nama Pengguna</th><th>Peranan</th><th>Tab Diakses</th><th>Tarikh Login</th><th>Masa Login</th><th>Masa Logout</th><th>Tempoh</th></tr></thead><tbody id="log_table"><tr><td colspan="8" class="loading">Tiada rekod log</td></tr></tbody></table></div>
     </div>
   </div>
-
 </main>
 <footer>Polis Diraja Malaysia &nbsp;·&nbsp; SSPDRM Melaka &nbsp;·&nbsp; Sistem Penugasan Anggota &nbsp;·&nbsp; <span id="footerRefresh">—</span></footer>
-</div><!-- end dashboardPage -->
+</div>
 
 <script>
-// ══════════════════════════════════════════
-// USER ACCOUNTS
-// username → { password, role, tab }
-// role: 'admin' = sees all tabs
-// role: 'daerah' = sees only their tab
-// ══════════════════════════════════════════
 const USERS = {
-  'admin':         { password: 'admin123',  role: 'admin',  tab: null },
-  'rosziah':       { password: 'asp1528',   role: 'admin',  tab: null },
-  'melakatengah':  { password: 'mt1234',    role: 'daerah', tab: 'd1' },
-  'murugan':       { password: 'asp1216',   role: 'daerah', tab: 'd1' },
-  'wong':          { password: 'insp1654',  role: 'daerah', tab: 'd1' },
-  'jasin':         { password: 'jasin1234', role: 'daerah', tab: 'd2' },
-  'kamala':        { password: 'insp1655',  role: 'daerah', tab: 'd2' },
-  'alorgajah':     { password: 'ag1234',    role: 'daerah', tab: 'd3' },
-  'lee':           { password: 'asp1518',   role: 'daerah', tab: 'd3' },
-  'shaharil':      { password: 'insp1214',  role: 'daerah', tab: 'd3' },
-  'ipksspdrm':     { password: 'ipk1234',   role: 'daerah', tab: 'd4' },
+  'admin':        { password: 'admin123',  role: 'admin',  tab: null },
+  'rosziah':      { password: 'asp1528',   role: 'admin',  tab: null },
+  'melakatengah': { password: 'mt1234',    role: 'daerah', tab: 'd1' },
+  'murugan':      { password: 'asp1216',   role: 'daerah', tab: 'd1' },
+  'wong':         { password: 'insp1654',  role: 'daerah', tab: 'd1' },
+  'jasin':        { password: 'jasin1234', role: 'daerah', tab: 'd2' },
+  'kamala':       { password: 'insp1655',  role: 'daerah', tab: 'd2' },
+  'alorgajah':    { password: 'ag1234',    role: 'daerah', tab: 'd3' },
+  'lee':          { password: 'asp1518',   role: 'daerah', tab: 'd3' },
+  'shaharil':     { password: 'insp1214',  role: 'daerah', tab: 'd3' },
+  'ipksspdrm':    { password: 'ipk1234',   role: 'daerah', tab: 'd4' },
 };
-
-// Tab labels
-const TAB_LABELS = {
-  today: '📅 Hari Ini (Semua)',
-  d1: '🔴 Melaka Tengah',
-  d2: '🟢 Jasin',
-  d3: '🟡 Alor Gajah',
-  d4: '🟣 IPK SSPDRM',
-};
-
-const BALAI_COLS    = [2,4,6,8];
-const NAMA_COLS     = [3,5,7,9];
-const BERTUGAS_COLS = [10,11];
-const PROXY = 'https://corsproxy.io/?';
-const DAERAH_MAP = {
-  d1: 'MELAKA TENGAH',
-  d2: 'JASIN',
-  d3: 'ALOR GAJAH',
-  d4: 'IPK SSPDRM'
-};
+const TAB_LABELS = { today:'📅 Hari Ini (Semua)', d1:'🔴 Melaka Tengah', d2:'🟢 Jasin', d3:'🟡 Alor Gajah', d4:'🟣 IPK SSPDRM' };
 const FIXED_URL = 'https://script.google.com/macros/s/AKfycbzwWTgYO92mc4v9r-_dXWhyYp1qsMjscRKlO8VkXmzBLXp651mR_EquIfcKKsTiqqKj/exec';
+const PROXY = 'https://corsproxy.io/?';
+const DAERAH_MAP = { d1:'MELAKA TENGAH', d2:'JASIN', d3:'ALOR GAJAH', d4:'IPK SSPDRM' };
+const COLORS = ['#003087','#0a3fa8','#1d4ed8','#2563eb','#3b82f6','#60a5fa','#dc2626','#16a34a','#d97706','#7c3aed'];
+let allData=[], charts={}, countdownSec=1800, countdownTimer, currentUser=null;
 
-let allData=[], charts={}, countdownSec=1800, countdownTimer;
-let currentUser=null;
-
-// ── LOGIN LOG (stored in localStorage)
 function getLogs(){ try{ return JSON.parse(localStorage.getItem('loginLogs')||'[]'); }catch(e){ return []; } }
 function saveLogs(logs){ localStorage.setItem('loginLogs', JSON.stringify(logs)); }
-
 function recordLogin(user){
-  const logs = getLogs();
-  const now = new Date();
-  const entry = {
-    id: Date.now(),
-    username: user.username,
-    role: user.role,
-    tab: user.tab ? TAB_LABELS[user.tab] : 'Semua Tab',
-    loginDate: now.toLocaleDateString('ms-MY'),
-    loginTime: now.toLocaleTimeString('ms-MY'),
-    loginTs: now.getTime(),
-    logoutTime: '—',
-    logoutTs: null,
-    duration: '—'
-  };
-  logs.unshift(entry); // newest first
-  if(logs.length > 200) logs.pop(); // keep max 200 entries
-  saveLogs(logs);
-  return entry.id;
+  const logs=getLogs(), now=new Date();
+  const entry={ id:Date.now(), username:user.username, role:user.role, tab:user.tab?TAB_LABELS[user.tab]:'Semua Tab', loginDate:now.toLocaleDateString('ms-MY'), loginTime:now.toLocaleTimeString('ms-MY'), loginTs:now.getTime(), logoutTime:'—', logoutTs:null, duration:'—' };
+  logs.unshift(entry); if(logs.length>200) logs.pop(); saveLogs(logs); return entry.id;
 }
-
 function recordLogout(loginId){
-  const logs = getLogs();
-  const entry = logs.find(l=>l.id===loginId);
-  if(entry){
-    const now = new Date();
-    entry.logoutTime = now.toLocaleTimeString('ms-MY');
-    entry.logoutTs = now.getTime();
-    const diffMs = now.getTime() - entry.loginTs;
-    const diffMin = Math.floor(diffMs/60000);
-    const diffSec = Math.floor((diffMs%60000)/1000);
-    entry.duration = diffMin+'m '+diffSec+'s';
-    saveLogs(logs);
-  }
+  const logs=getLogs(), entry=logs.find(l=>l.id===loginId);
+  if(entry){ const now=new Date(); entry.logoutTime=now.toLocaleTimeString('ms-MY'); entry.logoutTs=now.getTime(); const d=now.getTime()-entry.loginTs; entry.duration=Math.floor(d/60000)+'m '+Math.floor((d%60000)/1000)+'s'; saveLogs(logs); }
 }
-
 function renderLogTab(){
-  const logs = getLogs();
-  const today = new Date().toLocaleDateString('ms-MY');
-  const todayLogs = logs.filter(l=>l.loginDate===today);
-  const uniqueUsers = new Set(logs.map(l=>l.username)).size;
-  const adminSessions = logs.filter(l=>l.role==='admin').length;
-
-  document.getElementById('log_count').textContent = logs.length;
-  document.getElementById('log_k1').textContent = logs.length;
-  document.getElementById('log_k2').textContent = todayLogs.length;
-  document.getElementById('log_k3').textContent = uniqueUsers;
-  document.getElementById('log_k4').textContent = adminSessions;
-
-  const tbody = document.getElementById('log_table');
-  if(!logs.length){
-    tbody.innerHTML='<tr><td colspan="8" class="empty-state" style="text-align:center;padding:32px;color:var(--muted);">Tiada rekod log</td></tr>';
-    return;
-  }
-  tbody.innerHTML = logs.map((l,i)=>`
-    <tr>
-      <td style="color:var(--muted);font-size:11px;">${i+1}</td>
-      <td><strong>${l.username}</strong></td>
-      <td><span class="badge ${l.role==='admin'?'badge-rci':'badge-apr'}">${l.role==='admin'?'Admin':'Daerah'}</span></td>
-      <td style="font-size:12px;">${l.tab}</td>
-      <td style="font-size:12px;">${l.loginDate}</td>
-      <td><strong>${l.loginTime}</strong></td>
-      <td style="font-size:12px;">${l.logoutTime}</td>
-      <td style="font-size:12px;color:var(--muted);">${l.duration}</td>
-    </tr>`).join('');
+  const logs=getLogs(), today=new Date().toLocaleDateString('ms-MY');
+  document.getElementById('log_count').textContent=logs.length;
+  document.getElementById('log_k1').textContent=logs.length;
+  document.getElementById('log_k2').textContent=logs.filter(l=>l.loginDate===today).length;
+  document.getElementById('log_k3').textContent=new Set(logs.map(l=>l.username)).size;
+  document.getElementById('log_k4').textContent=logs.filter(l=>l.role==='admin').length;
+  const tbody=document.getElementById('log_table');
+  if(!logs.length){ tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted);">Tiada rekod log</td></tr>'; return; }
+  tbody.innerHTML=logs.map((l,i)=>`<tr><td style="color:var(--muted);font-size:11px;">${i+1}</td><td><strong>${l.username}</strong></td><td><span class="badge ${l.role==='admin'?'badge-rci':'badge-apr'}">${l.role==='admin'?'Admin':'Daerah'}</span></td><td style="font-size:12px;">${l.tab}</td><td style="font-size:12px;">${l.loginDate}</td><td><strong>${l.loginTime}</strong></td><td style="font-size:12px;">${l.logoutTime}</td><td style="font-size:12px;color:var(--muted);">${l.duration}</td></tr>`).join('');
 }
+function clearLog(){ if(confirm('Padam semua rekod log masuk?')){ localStorage.removeItem('loginLogs'); renderLogTab(); } }
 
-function clearLog(){
-  if(confirm('Padam semua rekod log masuk?')){
-    localStorage.removeItem('loginLogs');
-    renderLogTab();
-  }
-}
-
-// ── LOGIN
 function doLogin(){
   const u=document.getElementById('loginUser').value.trim().toLowerCase();
   const p=document.getElementById('loginPass').value;
   const errEl=document.getElementById('loginError');
-
   if(USERS[u] && USERS[u].password===p){
     errEl.style.display='none';
-    currentUser={username:u, ...USERS[u]};
-    currentUser.loginId = recordLogin(currentUser);
-    sessionStorage.setItem('dashUser', JSON.stringify(currentUser));
+    currentUser={username:u,...USERS[u]};
+    currentUser.loginId=recordLogin(currentUser);
+    sessionStorage.setItem('dashUser',JSON.stringify(currentUser));
     showDashboard();
   } else {
     errEl.style.display='block';
@@ -556,265 +326,134 @@ function showDashboard(){
   document.getElementById('loginPage').style.display='none';
   document.getElementById('dashboardPage').style.display='block';
   document.getElementById('userPillName').textContent=currentUser.username.toUpperCase();
-
-  // Always set the fixed URL in the input box
-  const urlInput = document.getElementById('sheetUrl');
-  if(urlInput) urlInput.value = FIXED_URL;
-
-  // Show/hide tabs based on role
+  document.getElementById('sheetUrl').value=FIXED_URL;
   if(currentUser.role==='admin'){
     document.getElementById('urlBar').style.display='flex';
     ['today','d1','d2','d3','d4'].forEach(t=>document.getElementById('tab_btn_'+t).classList.remove('hidden'));
-    if(currentUser.username==='admin'){
-      document.getElementById('tab_btn_log').classList.remove('hidden');
-    } else {
-      document.getElementById('tab_btn_log').classList.add('hidden');
-    }
+    document.getElementById('tab_btn_log').classList[currentUser.username==='admin'?'remove':'add']('hidden');
     switchTab('today');
   } else {
-    // Daerah user — hide URL bar, auto-load silently
     document.getElementById('urlBar').style.display='none';
-    ['today','d1','d2','d3','d4'].forEach(t=>{
-      const el=document.getElementById('tab_btn_'+t);
-      if(t===currentUser.tab){ el.classList.remove('hidden'); }
-      else { el.classList.add('hidden'); }
-    });
+    ['today','d1','d2','d3','d4'].forEach(t=>document.getElementById('tab_btn_'+t).classList[t===currentUser.tab?'remove':'add']('hidden'));
+    document.getElementById('tab_btn_log').classList.add('hidden');
     switchTab(currentUser.tab);
   }
-
-  loadData(); // auto-load for all users
+  loadData();
 }
-  }
 
 function doLogout(){
-  if(currentUser && currentUser.loginId) recordLogout(currentUser.loginId);
-  sessionStorage.removeItem('dashUser');
-  currentUser=null;
+  if(currentUser&&currentUser.loginId) recordLogout(currentUser.loginId);
+  sessionStorage.removeItem('dashUser'); currentUser=null;
   document.getElementById('loginPage').style.display='flex';
   document.getElementById('dashboardPage').style.display='none';
   document.getElementById('loginUser').value='';
   document.getElementById('loginPass').value='';
 }
 
-// ── CLOCK
 function updateClock(){
-  const now=new Date();
-  const days=['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
-  const months=['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogs','Sep','Okt','Nov','Dis'];
+  const now=new Date(), days=['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'], months=['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogs','Sep','Okt','Nov','Dis'];
   document.getElementById('headerDate').textContent=days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
   document.getElementById('headerTime').textContent=now.toLocaleTimeString('ms-MY');
 }
 setInterval(updateClock,1000); updateClock();
 
-// ── COUNTDOWN
 function startCountdown(){
   clearInterval(countdownTimer); countdownSec=1800;
-  countdownTimer=setInterval(()=>{
-    countdownSec--;
-    if(countdownSec<=0){loadData();return;}
-    const m=Math.floor(countdownSec/60),s=countdownSec%60;
-    const el=document.getElementById('nextRefresh');
-    if(el) el.textContent='Auto-refresh dalam '+m+'m '+(s<10?'0'+s:s)+'s';
-  },1000);
+  countdownTimer=setInterval(()=>{ countdownSec--; if(countdownSec<=0){loadData();return;} const m=Math.floor(countdownSec/60),s=countdownSec%60; const el=document.getElementById('nextRefresh'); if(el)el.textContent='Auto-refresh dalam '+m+'m '+(s<10?'0'+s:s)+'s'; },1000);
 }
 
-// ── DATE HELPERS
-function getTodayStr(){const n=new Date();return n.getDate()+'/'+(n.getMonth()+1)+'/'+n.getFullYear();}
+function getTodayStr(){ const n=new Date(); return n.getDate()+'/'+(n.getMonth()+1)+'/'+n.getFullYear(); }
 function getTodayFull(){
-  const n=new Date();
-  const days=['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
-  const months=['Januari','Februari','Mac','April','Mei','Jun','Julai','Ogos','September','Oktober','November','Disember'];
+  const n=new Date(), days=['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'], months=['Januari','Februari','Mac','April','Mei','Jun','Julai','Ogos','September','Oktober','November','Disember'];
   return days[n.getDay()]+', '+n.getDate()+' '+months[n.getMonth()]+' '+n.getFullYear();
 }
 function normaliseDate(str){
-  if(!str) return '';
-  str = str.trim();
-  // Handle ISO format: 2026-03-13T16:00:00.000Z → use UTC+8 (Malaysia)
-  if(str.includes('T')){
-    const d = new Date(str);
-    // Adjust to Malaysia time (UTC+8)
-    const myt = new Date(d.getTime() + 8*60*60*1000);
-    return myt.getUTCDate()+'/'+(myt.getUTCMonth()+1)+'/'+myt.getUTCFullYear();
-  }
-  // Handle YYYY-MM-DD
-  if(str.includes('-')){
-    const p=str.split('-');
-    if(p.length===3) return parseInt(p[2])+'/'+parseInt(p[1])+'/'+p[0];
-  }
-  // Handle D/M/YYYY or DD/MM/YYYY
-  const p=str.split('/');
-  if(p.length===3) return parseInt(p[0])+'/'+parseInt(p[1])+'/'+p[2];
+  if(!str) return ''; str=str.trim();
+  if(str.includes('T')){ const d=new Date(str); const myt=new Date(d.getTime()+8*60*60*1000); return myt.getUTCDate()+'/'+(myt.getUTCMonth()+1)+'/'+myt.getUTCFullYear(); }
+  if(str.includes('-')){ const p=str.split('-'); if(p.length===3) return parseInt(p[2])+'/'+parseInt(p[1])+'/'+p[0]; }
+  const p=str.split('/'); if(p.length===3) return parseInt(p[0])+'/'+parseInt(p[1])+'/'+p[2];
   return str;
 }
-
-// ── EXTRACT TIME FROM TIMESTAMP e.g. "13/3/2026 14:35:00" → "14:35"
-function extractTime(ts){
-  if(!ts) return '—';
-  const parts = ts.trim().split(' ');
-  if(parts.length >= 2){
-    const t = parts[1].split(':');
-    if(t.length >= 2) return t[0]+':'+t[1];
-  }
-  return '—';
-}
-
-// ── NORMALISE DAERAH for matching (uppercase, trim, remove extra spaces)
 function normDaerah(s){ return String(s||'').toUpperCase().replace(/\s+/g,' ').trim(); }
 
-// ── FORMAT TIME from Google Sheets (handles all formats)
 function formatTime(val){
-  if(!val || val==='' || val==='0') return '—';
-  const s = String(val).trim();
-
-  // Already HH:MM or HH:MM:SS text format
-  if(/^\d{1,2}:\d{2}/.test(s)){
-    const parts = s.split(':');
-    return parts[0].padStart(2,'0') + ':' + parts[1];
-  }
-
-  // Google Sheets Date string: "Sat Dec 30 1899 12:18:43 GMT+0655 (Singapore Standard Time)"
-  // or any Date string — parse and extract local HH:MM
-  if(s.includes('GMT') || s.includes('Standard Time') || s.includes('Jan') || s.includes('Feb') ||
-     s.includes('Mar') || s.includes('Apr') || s.includes('May') || s.includes('Jun') ||
-     s.includes('Jul') || s.includes('Aug') || s.includes('Sep') || s.includes('Oct') ||
-     s.includes('Nov') || s.includes('Dec')){
-    // Extract HH:MM directly from the string using regex
-    const match = s.match(/(\d{1,2}):(\d{2}):\d{2}/);
-    if(match){
-      return match[1].padStart(2,'0') + ':' + match[2];
-    }
-  }
-
-  // ISO datetime: 2026-03-13T01:30:00.000Z
-  if(s.includes('T')){
-    const d = new Date(s);
-    const myt = new Date(d.getTime() + 8*60*60*1000);
-    return String(myt.getUTCHours()).padStart(2,'0') + ':' + String(myt.getUTCMinutes()).padStart(2,'0');
-  }
-
-  // Google Sheets decimal fraction: 0.375 = 09:00
-  const num = parseFloat(s);
-  if(!isNaN(num) && num > 0 && num < 1){
-    const totalMin = Math.round(num * 24 * 60);
-    const hh = Math.floor(totalMin / 60);
-    const mm = totalMin % 60;
-    return String(hh).padStart(2,'0') + ':' + String(mm).padStart(2,'0');
-  }
-
+  if(!val||val===''||val==='0') return '—';
+  const s=String(val).trim();
+  if(/^\d{1,2}:\d{2}/.test(s)){ const p=s.split(':'); return p[0].padStart(2,'0')+':'+p[1]; }
+  const match=s.match(/(\d{1,2}):(\d{2}):\d{2}/);
+  if(match) return match[1].padStart(2,'0')+':'+match[2];
+  if(s.includes('T')){ const d=new Date(s); const myt=new Date(d.getTime()+8*60*60*1000); return String(myt.getUTCHours()).padStart(2,'0')+':'+String(myt.getUTCMinutes()).padStart(2,'0'); }
+  const num=parseFloat(s);
+  if(!isNaN(num)&&num>0&&num<1){ const t=Math.round(num*24*60); return String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0'); }
   return s;
 }
 
-// ── EXPAND ROWS - combine all balai cols (2,4,6,8) and nama cols (3,5,7,9)
 function expandRows(rows){
   const out=[];
   rows.forEach(row=>{
-    const timestamp = String(row[0]||'');
-    const daerah    = normDaerah(row[1]);
-    const bertugas  = String(row[10]||'').trim();
-    const pejawatan = String(row[12]||'').trim();
-    const jantina   = String(row[13]||'').trim();
-    const pangkat   = String(row[14]||'').trim();
-    const tarikh    = String(row[15]||'').trim();
-    const jenis     = String(row[16]||'').trim();
-    const masa = formatTime(row[17]);
-    const jam  = parseFloat(row[18])||0;
-    const lain = String(row[19]||'').trim();
-
-    // Combine: take first non-empty value from balai cols C,E,G,I (2,4,6,8)
-    const balai = [2,4,6,8].map(i=>String(row[i]||'').trim()).find(v=>v) || '—';
-    // Combine: take first non-empty value from nama cols D,F,H,J (3,5,7,9)
-    const nama  = [3,5,7,9].map(i=>String(row[i]||'').trim()).find(v=>v) || '';
-
+    const timestamp=String(row[0]||'');
+    const daerah=normDaerah(row[1]);
+    const bertugas=String(row[10]||'').trim();
+    const pejawatan=String(row[12]||'').trim();
+    const jantina=String(row[13]||'').trim();
+    const pangkat=String(row[14]||'').trim();
+    const tarikh=String(row[15]||'').trim();
+    const jenis=String(row[16]||'').trim();
+    const masa=formatTime(row[17]);
+    const jam=parseFloat(row[18])||0;
+    const lain=String(row[19]||'').trim();
+    const balai=[2,4,6,8].map(i=>String(row[i]||'').trim()).find(v=>v)||'—';
+    const nama=[3,5,7,9].map(i=>String(row[i]||'').trim()).find(v=>v)||'';
     if(!daerah) return;
-    if(!nama && balai==='—') return; // skip completely empty rows
-
+    if(!nama&&balai==='—') return;
     out.push({timestamp,daerah,balai,nama:nama||balai,bertugas,pejawatan,jantina,pangkat,jenis,jam,masa,tarikh,lain});
   });
   return out;
 }
 
-// ── LOAD DATA
 async function loadData(){
-  const url = FIXED_URL;
-  const urlInput = document.getElementById('sheetUrl');
-  if(urlInput) urlInput.value = FIXED_URL;
-
-  showAlert('info','⏳ Memuatkan data...');showAlert('error','');
-
+  const url=FIXED_URL;
+  document.getElementById('sheetUrl').value=FIXED_URL;
+  showAlert('info','⏳ Memuatkan data...'); showAlert('error','');
   const methods=[
     ()=>fetch(url).then(r=>r.json()),
     ()=>fetch(PROXY+encodeURIComponent(url)).then(r=>r.json()),
     ()=>fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(url)).then(r=>r.json()),
   ];
   let json=null;
-  for(const m of methods){try{json=await m();if(json&&json.rows)break;}catch(e){json=null;}}
-  if(!json||!json.rows){showAlert('error','❌ Gagal muat data. Semak URL Apps Script anda.');showAlert('info','');return;}
-
+  for(const m of methods){ try{ json=await m(); if(json&&json.rows) break; }catch(e){ json=null; } }
+  if(!json||!json.rows){ showAlert('error','❌ Gagal muat data. Semak URL Apps Script anda.'); showAlert('info',''); return; }
   allData=expandRows(json.rows);
-  if(!allData.length){showAlert('error','❌ Tiada data dalam sheet.');return;}
-
-  // Debug: show unique daerah values found
-  if(currentUser&&currentUser.role==='admin'){
-    const uniqueDaerah=[...new Set(allData.map(d=>d.daerah))].join(' · ');
-    const masaSample=allData.slice(0,3).map(r=>'['+r.masa+']').join(' ');
-    console.log('Daerah dalam sheet:', uniqueDaerah);
-    showAlert('info','✅ '+allData.length+' rekod · Daerah: '+uniqueDaerah+' · Masa sample: '+masaSample);
-  }
-
-  showAlert('info','');showAlert('error','');
+  if(!allData.length){ showAlert('error','❌ Tiada data dalam sheet.'); return; }
+  showAlert('info',''); showAlert('error','');
   const now=new Date().toLocaleTimeString('ms-MY');
   document.getElementById('liveText').textContent='Dikemaskini '+now;
   document.getElementById('footerRefresh').textContent='Terakhir dikemaskini: '+now;
-  if(urlInput) urlInput.value = FIXED_URL;
-
   renderAll();
   startCountdown();
 }
 
-function showAlert(type,msg){
-  const el=document.getElementById(type==='error'?'alertError':'alertInfo');
-  if(el){el.textContent=msg;el.style.display=msg?'block':'none';}
-}
+function showAlert(type,msg){ const el=document.getElementById(type==='error'?'alertError':'alertInfo'); if(el){el.textContent=msg;el.style.display=msg?'block':'none';} }
 
-// ── TABS
 function switchTab(name){
-  document.querySelectorAll('.tab').forEach(t=>{
-    const id=t.id.replace('tab_btn_','');
-    t.classList.toggle('active',id===name);
-  });
+  document.querySelectorAll('.tab').forEach(t=>{ const id=t.id.replace('tab_btn_',''); t.classList.toggle('active',id===name); });
   document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
-  const tc=document.getElementById('tab-'+name);
-  if(tc)tc.classList.add('active');
+  const tc=document.getElementById('tab-'+name); if(tc) tc.classList.add('active');
   if(name==='log') renderLogTab();
 }
 
-// ── RENDER ALL
 function renderAll(){
-  const today=getTodayStr();
-  const todayFull=getTodayFull();
+  const today=getTodayStr(), todayFull=getTodayFull();
   const todayData=allData.filter(r=>normaliseDate(r.tarikh)===today);
-
-  // (debug removed)
-
-  // Only render tabs the user has access to
-  const tabsToRender = currentUser.role==='admin'
-    ? ['today','d1','d2','d3','d4']
-    : [currentUser.tab];
-
+  const tabsToRender=currentUser.role==='admin'?['today','d1','d2','d3','d4']:[currentUser.tab];
   if(tabsToRender.includes('today')) renderTab('today',todayData,todayFull,true);
-
-  ['d1','d2','d3','d4'].forEach(key=>{
-    if(!tabsToRender.includes(key))return;
-    const daerahName=DAERAH_MAP[key];
-    const data=todayData.filter(r=>normDaerah(r.daerah)===daerahName);
-    renderTab(key,data,todayFull,false);
-  });
+  ['d1','d2','d3','d4'].forEach(key=>{ if(!tabsToRender.includes(key)) return; renderTab(key,todayData.filter(r=>normDaerah(r.daerah)===DAERAH_MAP[key]),todayFull,false); });
 }
 
 function renderTab(key,data,dateStr,isAll){
   const pre=key+'_';
-  if(document.getElementById(pre+'title'))document.getElementById(pre+'title').textContent=dateStr;
-  if(document.getElementById(pre+'sub'))document.getElementById(pre+'sub').textContent=dateStr;
+  if(document.getElementById(pre+'title')) document.getElementById(pre+'title').textContent=dateStr;
+  if(document.getElementById(pre+'sub')) document.getElementById(pre+'sub').textContent=dateStr;
   document.getElementById(pre+'count').textContent=data.length;
   const tj=data.reduce((s,d)=>s+(d.jam||0),0);
   document.getElementById(pre+'k1').textContent=data.length;
@@ -830,94 +469,29 @@ function renderTab(key,data,dateStr,isAll){
     document.getElementById(pre+'k4').textContent=new Set(data.map(d=>d.jenis).filter(Boolean)).size;
   }
   document.getElementById(pre+'tb').textContent=data.length+' anggota';
-
-  if(isAll){
-    const byD=countBy(data,'daerah');
-    makeChart(pre+'c1','bar',Object.keys(byD),Object.values(byD),COLORS.slice(0,Object.keys(byD).length));
-  } else {
-    const byB=countBy(data,'balai');
-    const labels=Object.keys(byB).map(l=>l.replace('BALAI POLIS ',''));
-    makeChart(pre+'c1','bar',labels,Object.values(byB),COLORS.slice(0,Object.keys(byB).length));
-  }
-  const byT=countBy(data,'jenis');
-  makeChart(pre+'c2','doughnut',Object.keys(byT),Object.values(byT),COLORS.slice(0,Object.keys(byT).length));
-
+  if(isAll){ const byD=countBy(data,'daerah'); makeChart(pre+'c1','bar',Object.keys(byD),Object.values(byD),COLORS); }
+  else { const byB=countBy(data,'balai'); makeChart(pre+'c1','bar',Object.keys(byB).map(l=>l.replace('BALAI POLIS ','')),Object.values(byB),COLORS); }
+  const byT=countBy(data,'jenis'); makeChart(pre+'c2','doughnut',Object.keys(byT),Object.values(byT),COLORS);
   const tbody=document.getElementById(pre+'table');
-  if(!data.length){
-    tbody.innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">Tiada rekod penugasan hari ini</div></div></td></tr>';
-    return;
-  }
+  if(!data.length){ tbody.innerHTML='<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">Tiada rekod penugasan hari ini</div></div></td></tr>'; return; }
   if(isAll){
-    tbody.innerHTML=data.map((r,i)=>`
-      <tr>
-        <td style="color:var(--muted);font-size:11px;">${i+1}</td>
-        <td><strong style="color:var(--navy)">${r.daerah}</strong></td>
-        <td><strong>${r.nama}</strong></td>
-        <td style="font-size:12px;">${r.balai.replace('BALAI POLIS ','')}</td>
-        <td style="font-size:12px;">${r.bertugas.replace('BALAI POLIS ','')}</td>
-        <td><span class="badge ${badgeClass(r.jenis)}">${r.jenis||'—'}</span></td>
-        <td><strong>${r.jam||'—'}</strong></td>
-        <td>${r.masa||'—'}</td>
-      </tr>`).join('');
+    tbody.innerHTML=data.map((r,i)=>`<tr><td style="color:var(--muted);font-size:11px;">${i+1}</td><td><strong style="color:var(--navy)">${r.daerah}</strong></td><td><strong>${r.nama}</strong></td><td style="font-size:12px;">${r.balai.replace('BALAI POLIS ','')}</td><td style="font-size:12px;">${r.bertugas.replace('BALAI POLIS ','')}</td><td><span class="badge ${badgeClass(r.jenis)}">${r.jenis||'—'}</span></td><td><strong>${r.jam||'—'}</strong></td><td>${r.masa||'—'}</td></tr>`).join('');
   } else {
-    tbody.innerHTML=data.map((r,i)=>`
-      <tr>
-        <td style="color:var(--muted);font-size:11px;">${i+1}</td>
-        <td style="font-size:12px;">${r.pangkat||'—'}</td>
-        <td><strong>${r.nama}</strong></td>
-        <td style="font-size:12px;">${r.balai.replace('BALAI POLIS ','')}</td>
-        <td style="font-size:12px;">${r.bertugas.replace('BALAI POLIS ','')}</td>
-        <td><span class="badge ${badgeClass(r.jenis)}">${r.jenis||'—'}</span></td>
-        <td><strong>${r.jam||'—'}</strong></td>
-        <td>${r.masa||'—'}</td>
-        <td>${r.jantina||'—'}</td>
-        <td>${r.pejawatan||'—'}</td>
-      </tr>`).join('');
+    tbody.innerHTML=data.map((r,i)=>`<tr><td style="color:var(--muted);font-size:11px;">${i+1}</td><td style="font-size:12px;">${r.pangkat||'—'}</td><td><strong>${r.nama}</strong></td><td style="font-size:12px;">${r.balai.replace('BALAI POLIS ','')}</td><td style="font-size:12px;">${r.bertugas.replace('BALAI POLIS ','')}</td><td><span class="badge ${badgeClass(r.jenis)}">${r.jenis||'—'}</span></td><td><strong>${r.jam||'—'}</strong></td><td>${r.masa||'—'}</td><td>${r.jantina||'—'}</td><td>${r.pejawatan||'—'}</td></tr>`).join('');
   }
 }
 
-function countBy(data,key){const m={};data.forEach(d=>{const v=d[key]||'Lain';m[v]=(m[v]||0)+1;});return m;}
+function countBy(data,key){ const m={}; data.forEach(d=>{ const v=d[key]||'Lain'; m[v]=(m[v]||0)+1; }); return m; }
 
 function makeChart(id,type,labels,values,colors){
-  if(charts[id])charts[id].destroy();
-  const el=document.getElementById(id);if(!el)return;
-  const ctx=el.getContext('2d');
-  charts[id]=new Chart(ctx,{type,
-    data:{labels,datasets:[{data:values,
-      backgroundColor:type==='line'?'rgba(0,48,135,0.08)':colors,
-      borderColor:type==='line'?'#003087':colors,
-      borderWidth:type==='line'?2:0,fill:type==='line',tension:.4,
-      pointRadius:4,pointBackgroundColor:'#003087'
-    }]},
-    options:{responsive:true,maintainAspectRatio:true,
-      plugins:{
-        legend:{display:type==='doughnut',position:'right',labels:{font:{family:'Inter',size:11},padding:10,usePointStyle:true}},
-        tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw}`}}
-      },
-      scales:type!=='doughnut'?{
-        x:{grid:{display:false},ticks:{font:{family:'Inter',size:10},maxRotation:40}},
-        y:{grid:{color:'#f1f5f9'},ticks:{font:{family:'Inter',size:10}}}
-      }:{}
-    }
-  });
+  if(charts[id]) charts[id].destroy();
+  const el=document.getElementById(id); if(!el) return;
+  charts[id]=new Chart(el.getContext('2d'),{type,data:{labels,datasets:[{data:values,backgroundColor:colors.slice(0,values.length),borderColor:colors.slice(0,values.length),borderWidth:0}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:type==='doughnut',position:'right',labels:{font:{family:'Inter',size:11},padding:10,usePointStyle:true}},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw}`}}},scales:type!=='doughnut'?{x:{grid:{display:false},ticks:{font:{family:'Inter',size:10},maxRotation:40}},y:{grid:{color:'#f1f5f9'},ticks:{font:{family:'Inter',size:10}}}}:{}}});
 }
 
-function badgeClass(j){
-  if(!j)return'';const u=j.toUpperCase();
-  if(u.includes('LAIN'))return'badge-lain';
-  if(u.includes('PERTANYAAN')||u.includes('PEJABAT'))return'badge-pejabat';
-  if(u.includes('RCI'))return'badge-rci';
-  return'badge-apr';
-}
+function badgeClass(j){ if(!j)return''; const u=j.toUpperCase(); if(u.includes('LAIN'))return'badge-lain'; if(u.includes('PERTANYAAN')||u.includes('PEJABAT'))return'badge-pejabat'; if(u.includes('RCI'))return'badge-rci'; return'badge-apr'; }
 
-// ── ON LOAD: check session
-window.addEventListener('DOMContentLoaded',()=>{
-  const saved=sessionStorage.getItem('dashUser');
-  if(saved){
-    currentUser=JSON.parse(saved);
-    showDashboard();
-  }
-});
+window.addEventListener('DOMContentLoaded',()=>{ const saved=sessionStorage.getItem('dashUser'); if(saved){ currentUser=JSON.parse(saved); showDashboard(); } });
 </script>
 </body>
 </html>
