@@ -164,7 +164,7 @@
   <div class="tab d2"     id="tab_btn_d2"    onclick="switchTab('d2')">🟢 Jasin</div>
   <div class="tab d3"     id="tab_btn_d3"    onclick="switchTab('d3')">🟡 Alor Gajah</div>
   <div class="tab d4"     id="tab_btn_d4"    onclick="switchTab('d4')">🟣 IPK SSPDRM</div>
-  <div class="tab hidden" id="tab_btn_log"   onclick="switchTab('log')">📋 Log Masuk</div>
+  <div class="tab" id="tab_btn_log" onclick="switchTab('log')">📋 Log Masuk</div>
   <div style="margin-left:auto;display:flex;align-items:center;gap:8px;padding:0 16px;">
     <label style="font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap;">📆 Pilih Tarikh:</label>
     <input type="date" id="todayDatePicker" style="border:1.5px solid var(--border);border-radius:8px;padding:5px 10px;font-size:12px;font-family:'Inter',sans-serif;color:var(--dark);outline:none;cursor:pointer;background:white;" onchange="onDatePickerChange()"/>
@@ -276,7 +276,7 @@
     </div>
     <div class="card">
       <div class="card-header"><div class="card-title">Rekod Log Masuk</div><button onclick="clearLog()" style="background:#dc2626;color:white;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-family:'Inter',sans-serif;font-weight:600;cursor:pointer;">🗑️ Padam Log</button></div>
-      <div style="overflow-x:auto;"><table><thead><tr><th>#</th><th>Nama Pengguna</th><th>Peranan</th><th>Tab Diakses</th><th>Tarikh Login</th><th>Masa Login</th><th>Masa Logout</th><th>Tempoh</th></tr></thead><tbody id="log_table"><tr><td colspan="8" class="loading">Tiada rekod log</td></tr></tbody></table></div>
+      <div style="overflow-x:auto;"><table><thead><tr><th>#</th><th>Nama Pengguna</th><th>Peranan</th><th>Tab Diakses</th><th>Tarikh Login</th><th>Masa Login</th><th>Masa Logout</th><th>Tempoh</th></tr></thead><tbody id="log_table"><tr><td colspan="8" class="loading">Tiada rekod log masuk</td></tr></tbody></table></div>
     </div>
   </div>
 </main>
@@ -304,59 +304,181 @@ const DAERAH_MAP = { d1:'MELAKA TENGAH', d2:'JASIN', d3:'ALOR GAJAH', d4:'IPK SS
 const COLORS = ['#003087','#0a3fa8','#1d4ed8','#2563eb','#3b82f6','#60a5fa','#dc2626','#16a34a','#d97706','#7c3aed'];
 let allData=[], charts={}, countdownSec=1800, countdownTimer, currentUser=null;
 
-function getLogs(){ try{ return JSON.parse(localStorage.getItem('loginLogs')||'[]'); }catch(e){ return []; } }
-function saveLogs(logs){ localStorage.setItem('loginLogs', JSON.stringify(logs)); }
-function recordLogin(user){
-  const logs=getLogs(), now=new Date();
-  const entry={ id:Date.now(), username:user.username, role:user.role, tab:user.tab?TAB_LABELS[user.tab]:'Semua Tab', loginDate:now.toLocaleDateString('ms-MY'), loginTime:now.toLocaleTimeString('ms-MY'), loginTs:now.getTime(), logoutTime:'—', logoutTs:null, duration:'—' };
-  logs.unshift(entry); if(logs.length>200) logs.pop(); saveLogs(logs); return entry.id;
+// ========== LOGGING FUNCTIONS ==========
+function getLogs(){ 
+  try{ 
+    return JSON.parse(localStorage.getItem('loginLogs')||'[]'); 
+  } catch(e){ 
+    return []; 
+  } 
 }
-function recordLogout(loginId){
-  const logs=getLogs(), entry=logs.find(l=>l.id===loginId);
-  if(entry){ const now=new Date(); entry.logoutTime=now.toLocaleTimeString('ms-MY'); entry.logoutTs=now.getTime(); const d=now.getTime()-entry.loginTs; entry.duration=Math.floor(d/60000)+'m '+Math.floor((d%60000)/1000)+'s'; saveLogs(logs); }
-}
-function renderLogTab(){
-  const logs=getLogs(), today=new Date().toLocaleDateString('ms-MY');
-  document.getElementById('log_count').textContent=logs.length;
-  document.getElementById('log_k1').textContent=logs.length;
-  document.getElementById('log_k2').textContent=logs.filter(l=>l.loginDate===today).length;
-  document.getElementById('log_k3').textContent=new Set(logs.map(l=>l.username)).size;
-  document.getElementById('log_k4').textContent=logs.filter(l=>l.role==='admin').length;
-  const tbody=document.getElementById('log_table');
-  if(!logs.length){ tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted);">Tiada rekod log</td></tr>'; return; }
-  tbody.innerHTML=logs.map((l,i)=>`<tr><td style="color:var(--muted);font-size:11px;">${i+1}</td><td><strong>${l.username}</strong></td><td><span class="badge ${l.role==='admin'?'badge-rci':'badge-apr'}">${l.role==='admin'?'Admin':'Daerah'}</span></td><td style="font-size:12px;">${l.tab}</td><td style="font-size:12px;">${l.loginDate}</td><td><strong>${l.loginTime}</strong></td><td style="font-size:12px;">${l.logoutTime}</td><td style="font-size:12px;color:var(--muted);">${l.duration}</td></tr>`).join('');
-}
-function clearLog(){ if(confirm('Padam semua rekod log masuk?')){ localStorage.removeItem('loginLogs'); renderLogTab(); } }
 
+function saveLogs(logs){ 
+  localStorage.setItem('loginLogs', JSON.stringify(logs)); 
+}
+
+function recordLogin(user){
+  try {
+    const logs = getLogs();
+    const now = new Date();
+    
+    // Get the tab name for display
+    let tabDisplay = 'Semua Tab';
+    if (user.tab) {
+      tabDisplay = TAB_LABELS[user.tab] || user.tab;
+    }
+    
+    const entry = { 
+      id: Date.now(), 
+      username: user.username, 
+      role: user.role, 
+      tab: tabDisplay,
+      loginDate: now.toLocaleDateString('ms-MY', { day: '2-digit', month: '2-digit', year: 'numeric' }), 
+      loginTime: now.toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), 
+      loginTs: now.getTime(), 
+      logoutTime: '—', 
+      logoutTs: null, 
+      duration: '—' 
+    };
+    
+    logs.unshift(entry);
+    
+    // Keep only last 500 entries to prevent localStorage from getting too large
+    if(logs.length > 500) logs.pop();
+    
+    saveLogs(logs);
+    
+    // If log tab is currently active, refresh it
+    if (document.getElementById('tab-log') && document.getElementById('tab-log').classList.contains('active')) {
+      renderLogTab();
+    }
+    
+    console.log('Login recorded:', user.username, 'ID:', entry.id);
+    return entry.id;
+  } catch (e) {
+    console.error('Error recording login:', e);
+    return null;
+  }
+}
+
+function recordLogout(loginId){
+  try {
+    const logs = getLogs();
+    const entry = logs.find(l => l.id === loginId);
+    
+    if(entry){ 
+      const now = new Date(); 
+      entry.logoutTime = now.toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); 
+      entry.logoutTs = now.getTime(); 
+      
+      const diff = now.getTime() - entry.loginTs; 
+      const minutes = Math.floor(diff / 60000);
+      const seconds = Math.floor((diff % 60000) / 1000);
+      entry.duration = minutes + 'm ' + seconds + 's'; 
+      
+      saveLogs(logs); 
+      
+      // If log tab is active, refresh it
+      if (document.getElementById('tab-log') && document.getElementById('tab-log').classList.contains('active')) {
+        renderLogTab();
+      }
+      
+      console.log('Logout recorded for login ID:', loginId);
+    }
+  } catch (e) {
+    console.error('Error recording logout:', e);
+  }
+}
+
+function renderLogTab(){
+  const logs = getLogs();
+  const today = new Date().toLocaleDateString('ms-MY', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  
+  document.getElementById('log_count').textContent = logs.length;
+  document.getElementById('log_k1').textContent = logs.length;
+  document.getElementById('log_k2').textContent = logs.filter(l => l.loginDate === today).length;
+  document.getElementById('log_k3').textContent = new Set(logs.map(l => l.username)).size;
+  document.getElementById('log_k4').textContent = logs.filter(l => l.role === 'admin').length;
+  
+  const tbody = document.getElementById('log_table');
+  
+  if(!logs.length){ 
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted);">Tiada rekod log masuk</td></tr>'; 
+    return; 
+  }
+  
+  tbody.innerHTML = logs.map((l, i) => {
+    // Determine badge color based on role
+    const badgeClass = l.role === 'admin' ? 'badge-rci' : 'badge-apr';
+    const roleDisplay = l.role === 'admin' ? 'Admin' : 'Daerah';
+    
+    return `<tr>
+      <td style="color:var(--muted);font-size:11px;">${i+1}</td>
+      <td><strong style="color:var(--navy);">${l.username.toUpperCase()}</strong></td>
+      <td><span class="badge ${badgeClass}" style="background:${l.role === 'admin' ? '#fce7f3' : '#dbeafe'}; color:${l.role === 'admin' ? '#9d174d' : '#1e40af'};">${roleDisplay}</span></td>
+      <td style="font-size:12px;">${l.tab || '—'}</td>
+      <td style="font-size:12px;">${l.loginDate}</td>
+      <td><strong>${l.loginTime}</strong></td>
+      <td style="font-size:12px; color:${l.logoutTime !== '—' ? '#16a34a' : 'var(--muted)'};">${l.logoutTime}</td>
+      <td style="font-size:12px;color:var(--muted);">${l.duration}</td>
+    </tr>`;
+  }).join('');
+}
+
+function clearLog(){ 
+  if(confirm('Padam semua rekod log masuk?')){ 
+    localStorage.removeItem('loginLogs'); 
+    renderLogTab(); 
+  } 
+}
+
+// ========== AUTHENTICATION FUNCTIONS ==========
 function doLogin(){
-  const u=document.getElementById('loginUser').value.trim().toLowerCase();
-  const p=document.getElementById('loginPass').value;
-  const errEl=document.getElementById('loginError');
-  if(USERS[u] && USERS[u].password===p){
-    errEl.style.display='none';
-    currentUser={username:u,...USERS[u]};
-    currentUser.loginId=recordLogin(currentUser);
-    sessionStorage.setItem('dashUser',JSON.stringify(currentUser));
+  const u = document.getElementById('loginUser').value.trim().toLowerCase();
+  const p = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginError');
+  
+  if(USERS[u] && USERS[u].password === p){
+    errEl.style.display = 'none';
+    
+    // Create user object
+    currentUser = {
+      username: u,
+      ...USERS[u]
+    };
+    
+    // Record login in logs - THIS WILL NOW WORK FOR ALL USERS
+    currentUser.loginId = recordLogin(currentUser);
+    
+    // Save to session storage
+    sessionStorage.setItem('dashUser', JSON.stringify(currentUser));
+    
+    // Show dashboard
     showDashboard();
+    
+    // Log to console for debugging
+    console.log('User logged in:', u, 'Login ID:', currentUser.loginId);
+    
   } else {
-    errEl.style.display='block';
-    document.getElementById('loginPass').value='';
+    errEl.style.display = 'block';
+    document.getElementById('loginPass').value = '';
   }
 }
 
 function showDashboard(){
-  document.getElementById('loginPage').style.display='none';
-  document.getElementById('dashboardPage').style.display='block';
-  document.getElementById('userPillName').textContent=currentUser.username.toUpperCase();
-  document.getElementById('sheetUrl').value=FIXED_URL;
-  if(currentUser.role==='admin'){
-    document.getElementById('urlBar').style.display='flex';
-    ['today','d1','d2','d3','d4'].forEach(t=>document.getElementById('tab_btn_'+t).classList.remove('hidden'));
-    document.getElementById('tab_btn_log').classList[currentUser.username==='admin'?'remove':'add']('hidden');
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('dashboardPage').style.display = 'block';
+  document.getElementById('userPillName').textContent = currentUser.username.toUpperCase();
+  document.getElementById('sheetUrl').value = FIXED_URL;
+  
+  if(currentUser.role === 'admin'){
+    document.getElementById('urlBar').style.display = 'flex';
+    ['today','d1','d2','d3','d4'].forEach(t => document.getElementById('tab_btn_'+t).classList.remove('hidden'));
+    document.getElementById('tab_btn_log').classList.remove('hidden');
     switchTab('today');
   } else {
-    document.getElementById('urlBar').style.display='none';
-    ['today','d1','d2','d3','d4'].forEach(t=>document.getElementById('tab_btn_'+t).classList[t===currentUser.tab?'remove':'add']('hidden'));
+    document.getElementById('urlBar').style.display = 'none';
+    ['today','d1','d2','d3','d4'].forEach(t => document.getElementById('tab_btn_'+t).classList[t === currentUser.tab ? 'remove' : 'add']('hidden'));
     document.getElementById('tab_btn_log').classList.add('hidden');
     switchTab(currentUser.tab);
   }
@@ -364,12 +486,18 @@ function showDashboard(){
 }
 
 function doLogout(){
-  if(currentUser&&currentUser.loginId) recordLogout(currentUser.loginId);
-  sessionStorage.removeItem('dashUser'); currentUser=null;
-  document.getElementById('loginPage').style.display='flex';
-  document.getElementById('dashboardPage').style.display='none';
-  document.getElementById('loginUser').value='';
-  document.getElementById('loginPass').value='';
+  if(currentUser && currentUser.loginId) {
+    recordLogout(currentUser.loginId);
+    console.log('User logged out:', currentUser.username, 'Login ID:', currentUser.loginId);
+  }
+  
+  sessionStorage.removeItem('dashUser'); 
+  currentUser = null;
+  
+  document.getElementById('loginPage').style.display = 'flex';
+  document.getElementById('dashboardPage').style.display = 'none';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
 }
 
 function updateClock(){
@@ -625,7 +753,13 @@ function normalizeJenis(j){
 
 function badgeClass(j){ if(!j)return''; const u=j.toUpperCase(); if(u.includes('LAIN'))return'badge-lain'; if(u.includes('PERTANYAAN')||u.includes('PEJABAT'))return'badge-pejabat'; if(u.includes('SJR'))return'badge-rci'; if(u.includes('MPV'))return'badge-rci'; if(u.includes('DCC'))return'badge-lain'; if(u.includes('SENTRI')||u.includes('PROWLER'))return'badge-pejabat'; if(u.includes('BIT')||u.includes('RONDAAN'))return'badge-apr'; if(u.includes('PENTADBIRAN'))return'badge-rci'; return'badge-apr'; }
 
-window.addEventListener('DOMContentLoaded',()=>{ const saved=sessionStorage.getItem('dashUser'); if(saved){ currentUser=JSON.parse(saved); showDashboard(); } });
+window.addEventListener('DOMContentLoaded',()=>{ 
+  const saved=sessionStorage.getItem('dashUser'); 
+  if(saved){ 
+    currentUser=JSON.parse(saved); 
+    showDashboard(); 
+  } 
+});
 </script>
 </body>
 </html>
