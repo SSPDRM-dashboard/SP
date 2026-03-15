@@ -127,10 +127,24 @@
 
 <div id="loginPage">
   <div class="login-box">
-   <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Seal_of_the_Royal_Malaysia_Police.svg/240px-Seal_of_the_Royal_Malaysia_Police.svg.png" 
-     class="login-logo" 
-     alt="PDRM"
-     onerror="this.src='https://www.pdrm.gov.my/images/logo-pdrm.png'; this.onerror=null;">
+ <div class="logo-container">
+<img 
+src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Seal_of_the_Royal_Malaysia_Police.svg"
+class="login-logo"
+alt="PDRM Logo">
+</div>
+
+<style>
+.logo-container{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.login-logo{
+  width:120px;
+  height:auto;
+}
+</style>
     <div class="login-sub">Sistem Penugasan Anggota SSPDRM</div>
     <div class="login-field"><label>Nama Pengguna</label><input type="text" id="loginUser" placeholder="Masukkan nama pengguna..." autocomplete="username"/></div>
     <div class="login-field"><label>Kata Laluan</label><input type="password" id="loginPass" placeholder="Masukkan kata laluan..." autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
